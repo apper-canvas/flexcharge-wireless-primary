@@ -287,160 +287,81 @@ const handleInputChange = (field, value) => {
                           )}
                         </motion.div>
                       )
-})}
+                    })}
                   </div>
                   
-                  {/* Delivery Method Specific Settings */}
-                  {formData.deliveryMethod && (
-                    <div className="mt-6">
-                      {/* Instant Download Settings */}
-                      {formData.deliveryMethod === 'instant' && (
-                        <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                          <h4 className="text-sm font-medium text-blue-900 mb-3 flex items-center">
-                            <ApperIcon name="Download" size={16} className="mr-2" />
-                            Instant Download Settings
-                          </h4>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {configData.fields.filter(field => {
-                              if (field.section !== 'delivery') return false
-                              if (field.dependsOn === 'deliveryMethod' && field.showWhen && field.showWhen.includes('instant')) {
-                                return true
-                              }
-                              return false
-                            }).map((field, index) => (
-                              <motion.div
-                                key={field.name}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                              >
-                                <FormField
-                                  type={field.type}
-                                  label={field.label}
-                                  value={formData[field.name] || ''}
-                                  onChange={(e) => handleInputChange(field.name, field.type === 'number' ? parseInt(e.target.value) || 0 : e.target.value)}
-                                  className="w-full"
-                                />
-                                {field.description && (
-                                  <p className="text-xs text-gray-500 mt-1">{field.description}</p>
-                                )}
-                              </motion.div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* Email Delivery Settings */}
-                      {formData.deliveryMethod === 'email' && (
-                        <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                          <h4 className="text-sm font-medium text-green-900 mb-3 flex items-center">
-                            <ApperIcon name="Mail" size={16} className="mr-2" />
-                            Email Delivery Settings
-                          </h4>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {configData.fields.filter(field => {
-                              if (field.section !== 'delivery') return false
-                              if (field.dependsOn === 'deliveryMethod' && field.showWhen && field.showWhen.includes('email')) {
-                                return true
-                              }
-                              return false
-                            }).map((field, index) => (
-                              <motion.div
-                                key={field.name}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                              >
-                                <FormField
-                                  type={field.type}
-                                  label={field.label}
-                                  value={formData[field.name] || ''}
-                                  onChange={(e) => handleInputChange(field.name, field.type === 'number' ? parseInt(e.target.value) || 0 : e.target.value)}
-                                  className="w-full"
-                                />
-                                {field.description && (
-                                  <p className="text-xs text-gray-500 mt-1">{field.description}</p>
-                                )}
-                              </motion.div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* Account-Based Access Settings */}
-                      {formData.deliveryMethod === 'account' && (
-                        <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
-                          <h4 className="text-sm font-medium text-purple-900 mb-3 flex items-center">
-                            <ApperIcon name="User" size={16} className="mr-2" />
-                            Account-Based Access Settings
-                          </h4>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {configData.fields.filter(field => {
-                              if (field.section !== 'delivery') return false
-                              if (field.dependsOn === 'deliveryMethod' && field.showWhen && field.showWhen.includes('account')) {
-                                return true
-                              }
-                              return false
-                            }).map((field, index) => (
-                              <motion.div
-                                key={field.name}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                              >
-                                <FormField
-                                  type={field.type}
-                                  label={field.label}
-                                  value={formData[field.name] || ''}
-                                  onChange={(e) => handleInputChange(field.name, field.type === 'number' ? parseInt(e.target.value) || 0 : e.target.value)}
-                                  className="w-full"
-                                />
-                                {field.description && (
-                                  <p className="text-xs text-gray-500 mt-1">{field.description}</p>
-                                )}
-                              </motion.div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* API/Webhook Settings */}
-                      {formData.deliveryMethod === 'api' && (
-                        <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
-                          <h4 className="text-sm font-medium text-orange-900 mb-3 flex items-center">
-                            <ApperIcon name="Zap" size={16} className="mr-2" />
-                            API/Webhook Settings
-                          </h4>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {configData.fields.filter(field => {
-                              if (field.section !== 'delivery') return false
-                              if (field.dependsOn === 'deliveryMethod' && field.showWhen && field.showWhen.includes('api')) {
-                                return true
-                              }
-                              return false
-                            }).map((field, index) => (
-                              <motion.div
-                                key={field.name}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                                className={field.type === 'text' && field.name === 'webhookUrl' ? 'md:col-span-2' : ''}
-                              >
-                                <FormField
-                                  type={field.type}
-                                  label={field.label}
-                                  value={formData[field.name] || ''}
-                                  onChange={(e) => handleInputChange(field.name, field.type === 'number' ? parseInt(e.target.value) || 0 : e.target.value)}
-                                  className="w-full"
-                                />
-                                {field.description && (
-                                  <p className="text-xs text-gray-500 mt-1">{field.description}</p>
-                                )}
-                              </motion.div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                  {/* Delivery Method Specific Fields */}
+                  {formData.deliveryMethod === 'instant' && (
+                    <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <h4 className="text-sm font-medium text-blue-900 mb-3 flex items-center">
+                        <ApperIcon name="Download" size={16} className="mr-2" />
+                        Instant Download Settings
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          type="number"
+                          label="Link Expiration (hours)"
+                          value={formData.linkExpiration || ''}
+                          onChange={(e) => handleInputChange('linkExpiration', parseInt(e.target.value) || 0)}
+                          className="w-full"
+                        />
+                        <FormField
+                          type="text"
+                          label="IP Restriction"
+                          value={formData.ipRestriction || ''}
+                          onChange={(e) => handleInputChange('ipRestriction', e.target.value)}
+                          className="w-full"
+                        />
+                      </div>
+                    </div>
+                  )}
+                  
+                  {formData.deliveryMethod === 'email' && (
+                    <div className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200">
+                      <h4 className="text-sm font-medium text-green-900 mb-3 flex items-center">
+                        <ApperIcon name="Mail" size={16} className="mr-2" />
+                        Email Delivery Settings
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          type="select"
+                          label="Email Template"
+                          value={formData.emailTemplate || ''}
+                          onChange={(e) => handleInputChange('emailTemplate', e.target.value)}
+                          options={[
+                            { value: 'default', label: 'Default Template' },
+                            { value: 'professional', label: 'Professional Template' },
+                            { value: 'branded', label: 'Branded Template' },
+                            { value: 'custom', label: 'Custom Template' }
+                          ]}
+                          className="w-full"
+                        />
+                        <FormField
+                          type="number"
+                          label="Attachment Size Limit (MB)"
+                          value={formData.attachmentSizeLimit || ''}
+                          onChange={(e) => handleInputChange('attachmentSizeLimit', parseInt(e.target.value) || 0)}
+                          className="w-full"
+                        />
+                      </div>
+                    </div>
+                  )}
+                  
+                  {formData.deliveryMethod === 'account' && (
+                    <div className="mt-6 p-4 bg-purple-50 rounded-lg border border-purple-200">
+                      <h4 className="text-sm font-medium text-purple-900 mb-3 flex items-center">
+                        <ApperIcon name="User" size={16} className="mr-2" />
+                        Account-Based Access Settings
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          type="number"
+                          label="Device Limit"
+                          value={formData.deviceLimit || ''}
+                          onChange={(e) => handleInputChange('deviceLimit', parseInt(e.target.value) || 0)}
+                          className="w-full"
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
