@@ -117,12 +117,62 @@ const handleInputChange = (field, value) => {
           <p className="text-gray-600">{configData.description}</p>
         </div>
 
-        <motion.div
+<motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-<Card className="p-6 mb-6">
+          {/* Delivery Method Overview */}
+          <Card className="p-6 mb-6">
+            <div className="text-center mb-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Delivery Method Options</h3>
+              <p className="text-sm text-gray-600">Available delivery methods for your one-time purchase products</p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full mb-3">
+                  <ApperIcon name="Download" size={24} className="text-blue-600" />
+                </div>
+                <h4 className="text-sm font-medium text-gray-900 mb-1">Instant Download</h4>
+                <p className="text-xs text-gray-500 text-center">Immediate file download after payment</p>
+              </div>
+              
+              <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-full mb-3">
+                  <ApperIcon name="Mail" size={24} className="text-green-600" />
+                </div>
+                <h4 className="text-sm font-medium text-gray-900 mb-1">Email Delivery</h4>
+                <p className="text-xs text-gray-500 text-center">Files sent via email attachment</p>
+              </div>
+              
+              <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-full mb-3">
+                  <ApperIcon name="User" size={24} className="text-purple-600" />
+                </div>
+                <h4 className="text-sm font-medium text-gray-900 mb-1">Account-Based Access</h4>
+                <p className="text-xs text-gray-500 text-center">Access through user account portal</p>
+              </div>
+              
+              <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="flex items-center justify-center w-12 h-12 bg-orange-100 rounded-full mb-3">
+                  <ApperIcon name="Zap" size={24} className="text-orange-600" />
+                </div>
+                <h4 className="text-sm font-medium text-gray-900 mb-1">API/Webhook</h4>
+                <p className="text-xs text-gray-500 text-center">Programmatic delivery via API</p>
+              </div>
+              
+              <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-full mb-3">
+                  <ApperIcon name="XCircle" size={24} className="text-gray-600" />
+                </div>
+                <h4 className="text-sm font-medium text-gray-900 mb-1">No Delivery</h4>
+                <p className="text-xs text-gray-500 text-center">Service completed upon payment</p>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-6 mb-6">
             <div className="space-y-8">
               {/* Delivery Method Section */}
               <div>
