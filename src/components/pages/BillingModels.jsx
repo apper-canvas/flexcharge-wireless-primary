@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import ApperIcon from "@/components/ApperIcon";
@@ -8,22 +9,12 @@ import Card from "@/components/atoms/Card";
 import Empty from "@/components/ui/Empty";
 import Error from "@/components/ui/Error";
 import Loading from "@/components/ui/Loading";
-import FormField from "@/components/molecules/FormField";
 import { billingModelsService } from "@/services/api/billingModelsService";
-
 const BillingModels = () => {
+  const navigate = useNavigate()
   const [models, setModels] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [showModal, setShowModal] = useState(false)
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    icon: 'CreditCard',
-    configurationSummary: ''
-  })
-  const [formErrors, setFormErrors] = useState({})
-  
   useEffect(() => {
     loadBillingModels()
   }, [])
@@ -75,60 +66,6 @@ const BillingModels = () => {
     }
 }
   
-  const handleAddModel = async (e) => {
-    e.preventDefault()
-    
-    // Validate form
-    const errors = {}
-    if (!formData.title.trim()) errors.title = 'Title is required'
-    if (!formData.description.trim()) errors.description = 'Description is required'
-    if (!formData.configurationSummary.trim()) errors.configurationSummary = 'Configuration summary is required'
-    
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors)
-      return
-    }
-    
-    try {
-      const newModel = await billingModelsService.create({
-        ...formData,
-        isActive: false,
-        isPrimary: false,
-        gradient: 'bg-gradient-to-r from-blue-500 to-purple-600'
-      })
-      
-      setModels([...models, newModel])
-      setShowModal(false)
-      setFormData({
-        title: '',
-        description: '',
-        icon: 'CreditCard',
-        configurationSummary: ''
-      })
-      setFormErrors({})
-      toast.success('Billing model created successfully')
-    } catch (err) {
-      toast.error('Failed to create billing model')
-    }
-  }
-  
-  const handleModalClose = () => {
-    setShowModal(false)
-    setFormData({
-      title: '',
-      description: '',
-      icon: 'CreditCard',
-      configurationSummary: ''
-    })
-    setFormErrors({})
-  }
-  
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
-    if (formErrors[field]) {
-      setFormErrors(prev => ({ ...prev, [field]: '' }))
-    }
-  }
   if (loading) return <Loading type="list" />
   if (error) return <Error onRetry={loadBillingModels} />
   if (!models.length) return <Empty title="No billing models configured" message="Configure your first billing model to get started" />
@@ -140,7 +77,7 @@ return (
           <h1 className="text-2xl font-bold text-gray-900">Billing Models</h1>
           <p className="text-gray-600">Manage your billing models and configurations</p>
         </div>
-        <Button variant="primary" icon="Plus" onClick={() => setShowModal(true)}>
+<Button variant="primary" icon="Plus" onClick={() => navigate('/billing-model-selection')}>
           Add Billing Model
         </Button>
       </div>
@@ -214,84 +151,6 @@ return (
         ))}
       </div>
 
-{/* Add Billing Model Modal */}
-      {showModal && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              handleModalClose();
-            }
-          }}
-        >
-          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 relative">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-gray-900">Add Billing Model</h2>
-              <Button variant="ghost" size="sm" onClick={handleModalClose}>
-                <ApperIcon name="X" className="w-5 h-5" />
-              </Button>
-            </div>
-            
-            <form onSubmit={handleAddModel} className="space-y-4">
-              <FormField
-                label="Title"
-                type="input"
-                placeholder="Enter billing model title"
-                value={formData.title}
-                onChange={(e) => handleInputChange('title', e.target.value)}
-                error={formErrors.title}
-                required
-              />
-              
-              <FormField
-                label="Description"
-                type="input"
-                placeholder="Enter description"
-                value={formData.description}
-                onChange={(e) => handleInputChange('description', e.target.value)}
-                error={formErrors.description}
-                required
-              />
-              
-              <FormField
-                label="Icon"
-                type="select"
-                options={[
-                  { value: 'CreditCard', label: 'Credit Card' },
-                  { value: 'DollarSign', label: 'Dollar Sign' },
-                  { value: 'Calendar', label: 'Calendar' },
-                  { value: 'Clock', label: 'Clock' },
-                  { value: 'Zap', label: 'Zap' },
-                  { value: 'Target', label: 'Target' }
-                ]}
-                value={formData.icon}
-                onChange={(e) => handleInputChange('icon', e.target.value)}
-                required
-              />
-              
-              <FormField
-                label="Configuration Summary"
-                type="textarea"
-                placeholder="Enter detailed configuration information..."
-                value={formData.configurationSummary}
-                onChange={(e) => handleInputChange('configurationSummary', e.target.value)}
-                error={formErrors.configurationSummary}
-                rows={4}
-                required
-              />
-              
-              <div className="flex space-x-3 pt-4">
-                <Button type="button" variant="outline" onClick={handleModalClose} className="flex-1">
-                  Cancel
-                </Button>
-                <Button type="submit" variant="primary" className="flex-1">
-                  Create Model
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
