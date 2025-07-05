@@ -133,14 +133,14 @@ const BillingModels = () => {
   if (error) return <Error onRetry={loadBillingModels} />
   if (!models.length) return <Empty title="No billing models configured" message="Configure your first billing model to get started" />
   
-  return (
+return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Billing Models</h1>
           <p className="text-gray-600">Manage your billing models and configurations</p>
         </div>
-<Button variant="primary" icon="Plus" onClick={() => setShowModal(true)}>
+        <Button variant="primary" icon="Plus" onClick={() => setShowModal(true)}>
           Add Billing Model
         </Button>
       </div>
@@ -213,11 +213,7 @@ const BillingModels = () => {
           </motion.div>
         ))}
       </div>
-    </div>
-  )
-}
 
-export default BillingModels
       {/* Add Billing Model Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -289,3 +285,7 @@ export default BillingModels
         </div>
       )}
     </div>
+  )
+}
+
+export default BillingModels
