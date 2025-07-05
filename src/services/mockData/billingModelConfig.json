@@ -358,45 +358,66 @@
       }
     ]
   },
-  {
+{
     "Id": 3,
     "modelType": "usage",
     "title": "Usage-Based Configuration",
-    "description": "Configure your usage-based billing with metering, pricing tiers, and billing cycles",
+    "description": "Configure your usage-based billing with meter setup, pricing tiers, and billing cycles",
     "defaultSettings": {
-      "meteringUnit": "api_calls",
+      "meterName": "API Usage Meter",
+      "meterCode": "API_CALLS",
+      "unitOfMeasure": "calls",
+      "customUnitName": "",
       "billingCycle": "monthly",
       "freeTier": 1000,
       "overageRate": 0.01,
-      "minimumCharge": 0
+      "minimumCharge": 0,
+      "usageTracking": "api",
+      "overage": "allow"
     },
     "fields": [
       {
-        "name": "meteringUnit",
-        "label": "Metering Unit",
-        "type": "select",
-        "section": "metering",
+        "name": "meterName",
+        "label": "Meter Name",
+        "type": "text",
+        "section": "meter",
         "required": true,
-        "options": [
-          { "value": "api_calls", "label": "API Calls" },
-          { "value": "requests", "label": "Requests" },
-          { "value": "storage_gb", "label": "Storage (GB)" },
-          { "value": "bandwidth_gb", "label": "Bandwidth (GB)" },
-          { "value": "compute_hours", "label": "Compute Hours" },
-          { "value": "users", "label": "Active Users" },
-          { "value": "transactions", "label": "Transactions" },
-          { "value": "custom", "label": "Custom Unit" }
-        ],
-        "description": "Unit of measurement for usage tracking"
+        "description": "Display name for your usage meter"
       },
       {
-        "name": "customUnit",
+        "name": "meterCode",
+        "label": "Meter Code",
+        "type": "text",
+        "section": "meter",
+        "required": true,
+        "description": "Unique identifier for tracking (uppercase, no spaces)"
+      },
+      {
+        "name": "unitOfMeasure",
+        "label": "Unit of Measure",
+        "type": "select",
+        "section": "meter",
+        "required": true,
+        "options": [
+          { "value": "calls", "label": "Calls/Requests" },
+          { "value": "gb", "label": "Gigabytes (GB)" },
+          { "value": "mb", "label": "Megabytes (MB)" },
+          { "value": "hours", "label": "Hours" },
+          { "value": "users", "label": "Users" },
+          { "value": "transactions", "label": "Transactions" },
+          { "value": "events", "label": "Events" },
+          { "value": "custom", "label": "Custom Unit" }
+        ],
+        "description": "How usage will be measured and billed"
+      },
+      {
+        "name": "customUnitName",
         "label": "Custom Unit Name",
         "type": "text",
-        "section": "metering",
-        "dependsOn": "meteringUnit",
+        "section": "meter",
+        "dependsOn": "unitOfMeasure",
         "showWhen": ["custom"],
-        "description": "Name for your custom metering unit"
+        "description": "Name for your custom measurement unit"
       },
       {
         "name": "billingCycle",
@@ -420,19 +441,6 @@
         "description": "Free usage allowance per billing cycle (0 for no free tier)"
       },
       {
-        "name": "pricingTiers",
-        "label": "Pricing Tiers",
-        "type": "array",
-        "section": "pricing",
-        "required": true,
-        "description": "Define usage-based pricing tiers",
-        "defaultValue": [
-          { "from": 0, "to": 1000, "rate": 0 },
-          { "from": 1001, "to": 10000, "rate": 0.01 },
-          { "from": 10001, "to": null, "rate": 0.005 }
-        ]
-      },
-      {
         "name": "minimumCharge",
         "label": "Minimum Monthly Charge",
         "type": "number",
@@ -443,7 +451,7 @@
         "name": "usageTracking",
         "label": "Usage Tracking Method",
         "type": "select",
-        "section": "metering",
+        "section": "tracking",
         "options": [
           { "value": "api", "label": "API-based Tracking" },
           { "value": "webhook", "label": "Webhook Events" },

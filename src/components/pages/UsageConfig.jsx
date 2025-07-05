@@ -102,14 +102,156 @@ const UsageConfig = () => {
           <p className="text-gray-600">{configData.description}</p>
         </div>
 
-        <motion.div
+<motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
+          {/* Meter Setup Section */}
           <Card className="p-6 mb-6">
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <ApperIcon name="Activity" size={20} className="text-primary" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Meter Setup</h3>
+                <p className="text-sm text-gray-600">Configure your usage metering parameters</p>
+              </div>
+            </div>
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {configData.fields.map((field, index) => (
+              {/* Meter Name */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+              >
+                <FormField
+                  type="text"
+                  label="Meter Name"
+                  value={formData.meterName || ''}
+                  onChange={(e) => handleInputChange('meterName', e.target.value)}
+                  className="w-full"
+                  placeholder="e.g., API Usage Meter"
+                />
+                <p className="text-xs text-gray-500 mt-1">Display name for your usage meter</p>
+              </motion.div>
+
+              {/* Meter Code */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <FormField
+                  type="text"
+                  label="Meter Code"
+                  value={formData.meterCode || ''}
+                  onChange={(e) => handleInputChange('meterCode', e.target.value.toUpperCase())}
+                  className="w-full"
+                  placeholder="e.g., API_CALLS"
+                />
+                <p className="text-xs text-gray-500 mt-1">Unique identifier for tracking (uppercase, no spaces)</p>
+              </motion.div>
+
+              {/* Unit of Measure */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                <FormField
+                  type="select"
+                  label="Unit of Measure"
+                  value={formData.unitOfMeasure || ''}
+                  onChange={(e) => handleInputChange('unitOfMeasure', e.target.value)}
+                  options={[
+                    { value: 'calls', label: 'Calls/Requests' },
+                    { value: 'gb', label: 'Gigabytes (GB)' },
+                    { value: 'mb', label: 'Megabytes (MB)' },
+                    { value: 'hours', label: 'Hours' },
+                    { value: 'users', label: 'Users' },
+                    { value: 'transactions', label: 'Transactions' },
+                    { value: 'events', label: 'Events' },
+                    { value: 'custom', label: 'Custom Unit' }
+                  ]}
+                  className="w-full"
+                />
+                <p className="text-xs text-gray-500 mt-1">How usage will be measured and billed</p>
+              </motion.div>
+
+              {/* Custom Unit Name (conditional) */}
+              {formData.unitOfMeasure === 'custom' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <FormField
+                    type="text"
+                    label="Custom Unit Name"
+                    value={formData.customUnitName || ''}
+                    onChange={(e) => handleInputChange('customUnitName', e.target.value)}
+                    className="w-full"
+                    placeholder="e.g., Credits, Points, Actions"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Name for your custom measurement unit</p>
+                </motion.div>
+              )}
+            </div>
+
+            {/* Meter Preview */}
+            {(formData.meterName || formData.meterCode || formData.unitOfMeasure) && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="mt-6 p-4 bg-gray-50 rounded-lg border"
+              >
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <ApperIcon name="Eye" size={16} className="text-primary" />
+                  </div>
+                  <h4 className="text-sm font-medium text-gray-900">Meter Preview</h4>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                  <div>
+                    <span className="text-gray-500">Name:</span>
+                    <p className="font-medium">{formData.meterName || 'Not specified'}</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Code:</span>
+                    <p className="font-medium font-mono">{formData.meterCode || 'Not specified'}</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Unit:</span>
+                    <p className="font-medium">
+                      {formData.unitOfMeasure === 'custom' 
+                        ? (formData.customUnitName || 'Custom') 
+                        : (formData.unitOfMeasure ? 
+                           configData.fields.find(f => f.name === 'unitOfMeasure')?.options.find(o => o.value === formData.unitOfMeasure)?.label 
+                           : 'Not specified')}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </Card>
+
+          {/* Additional Configuration */}
+          <Card className="p-6 mb-6">
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="p-2 bg-secondary/10 rounded-lg">
+                <ApperIcon name="Settings" size={20} className="text-secondary" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Billing Configuration</h3>
+                <p className="text-sm text-gray-600">Set up pricing and billing parameters</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {configData.fields.filter(field => !['meterName', 'meterCode', 'unitOfMeasure', 'customUnitName'].includes(field.name)).map((field, index) => (
                 <motion.div
                   key={field.name}
                   initial={{ opacity: 0, y: 20 }}
