@@ -363,10 +363,9 @@ const handleInputChange = (field, value) => {
                           value={formData.deviceLimit || ''}
                           onChange={(e) => handleInputChange('deviceLimit', parseInt(e.target.value) || 0)}
                           className="w-full"
-                        />
+/>
                       </div>
                     </div>
-</div>
                   )}
                 </div>
               )}
