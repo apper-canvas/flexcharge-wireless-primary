@@ -122,118 +122,250 @@ const handleInputChange = (field, value) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          {/* Delivery Method Overview */}
+{/* Delivery Method Overview */}
           <Card className="p-6 mb-6">
             <div className="text-center mb-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Delivery Method Options</h3>
-              <p className="text-sm text-gray-600">Available delivery methods for your one-time purchase products</p>
+              <p className="text-sm text-gray-600">Select your preferred delivery method for one-time purchase products</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-              <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full mb-3">
-                  <ApperIcon name="Download" size={24} className="text-blue-600" />
-                </div>
-                <h4 className="text-sm font-medium text-gray-900 mb-1">Instant Download</h4>
-                <p className="text-xs text-gray-500 text-center">Immediate file download after payment</p>
-              </div>
-              
-              <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-full mb-3">
-                  <ApperIcon name="Mail" size={24} className="text-green-600" />
-                </div>
-                <h4 className="text-sm font-medium text-gray-900 mb-1">Email Delivery</h4>
-                <p className="text-xs text-gray-500 text-center">Files sent via email attachment</p>
-              </div>
-              
-              <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <div className="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-full mb-3">
-                  <ApperIcon name="User" size={24} className="text-purple-600" />
-                </div>
-                <h4 className="text-sm font-medium text-gray-900 mb-1">Account-Based Access</h4>
-                <p className="text-xs text-gray-500 text-center">Access through user account portal</p>
-              </div>
-              
-              <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <div className="flex items-center justify-center w-12 h-12 bg-orange-100 rounded-full mb-3">
-                  <ApperIcon name="Zap" size={24} className="text-orange-600" />
-                </div>
-                <h4 className="text-sm font-medium text-gray-900 mb-1">API/Webhook</h4>
-                <p className="text-xs text-gray-500 text-center">Programmatic delivery via API</p>
-              </div>
-              
-              <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-full mb-3">
-                  <ApperIcon name="XCircle" size={24} className="text-gray-600" />
-                </div>
-                <h4 className="text-sm font-medium text-gray-900 mb-1">No Delivery</h4>
-                <p className="text-xs text-gray-500 text-center">Service completed upon payment</p>
-              </div>
+              {[
+                { 
+                  value: 'instant', 
+                  label: 'Instant Download', 
+                  description: 'Immediate file download after payment',
+                  icon: 'Download',
+                  iconColor: 'text-blue-600',
+                  bgColor: 'bg-blue-100'
+                },
+                { 
+                  value: 'email', 
+                  label: 'Email Delivery', 
+                  description: 'Files sent via email attachment',
+                  icon: 'Mail',
+                  iconColor: 'text-green-600',
+                  bgColor: 'bg-green-100'
+                },
+                { 
+                  value: 'account', 
+                  label: 'Account-Based Access', 
+                  description: 'Access through user account portal',
+                  icon: 'User',
+                  iconColor: 'text-purple-600',
+                  bgColor: 'bg-purple-100'
+                },
+                { 
+                  value: 'api', 
+                  label: 'API/Webhook', 
+                  description: 'Programmatic delivery via API',
+                  icon: 'Zap',
+                  iconColor: 'text-orange-600',
+                  bgColor: 'bg-orange-100'
+                },
+                { 
+                  value: 'none', 
+                  label: 'No Delivery', 
+                  description: 'Service completed upon payment',
+                  icon: 'XCircle',
+                  iconColor: 'text-gray-600',
+                  bgColor: 'bg-gray-100'
+                }
+              ].map((method) => {
+                const isSelected = formData.deliveryMethod === method.value
+                return (
+                  <div 
+                    key={method.value}
+                    className={`relative flex flex-col items-center p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 ${
+                      isSelected 
+                        ? 'border-primary bg-primary/5 shadow-md' 
+                        : 'border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-gray-100'
+                    }`}
+                    onClick={() => handleInputChange('deliveryMethod', method.value)}
+                  >
+                    <input
+                      type="radio"
+                      name="deliveryMethod"
+                      value={method.value}
+                      checked={isSelected}
+                      onChange={() => handleInputChange('deliveryMethod', method.value)}
+                      className="absolute top-3 right-3 w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary focus:ring-2"
+                    />
+                    {isSelected && (
+                      <div className="absolute top-2 right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+                        <ApperIcon name="Check" size={12} className="text-white" />
+                      </div>
+                    )}
+                    <div className={`flex items-center justify-center w-12 h-12 rounded-full mb-3 ${
+                      isSelected ? 'bg-primary/20' : method.bgColor
+                    }`}>
+                      <ApperIcon 
+                        name={method.icon} 
+                        size={24} 
+                        className={isSelected ? 'text-primary' : method.iconColor} 
+                      />
+                    </div>
+                    <h4 className={`text-sm font-medium mb-1 ${
+                      isSelected ? 'text-primary' : 'text-gray-900'
+                    }`}>
+                      {method.label}
+                    </h4>
+                    <p className="text-xs text-gray-500 text-center">{method.description}</p>
+                  </div>
+                )
+              })}
             </div>
           </Card>
 
-          <Card className="p-6 mb-6">
+<Card className="p-6 mb-6">
             <div className="space-y-8">
-              {/* Delivery Method Section */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Delivery Method</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {configData.fields.filter(field => field.section === 'delivery').map((field, index) => {
-                    const isVisible = !field.dependsOn || formData[field.dependsOn]
-                    if (!isVisible) return null
-                    
-                    return (
-                      <motion.div
-                        key={field.name}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className={field.type === 'textarea' ? 'md:col-span-2' : ''}
-                      >
-                        {field.type === 'checkbox' ? (
-                          <div className="flex items-center space-x-3">
-                            <input
-                              type="checkbox"
-                              id={field.name}
-                              checked={formData[field.name] || false}
-                              onChange={(e) => handleInputChange(field.name, e.target.checked)}
-                              className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
-                            />
-                            <div>
-                              <label htmlFor={field.name} className="text-sm font-medium text-gray-700">
-                                {field.label}
-                              </label>
-                              {field.description && (
-                                <p className="text-xs text-gray-500 mt-1">{field.description}</p>
-                              )}
+              {/* Delivery Method Configuration */}
+              {formData.deliveryMethod && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    Delivery Configuration
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {configData.fields.filter(field => {
+                      if (field.section !== 'delivery') return false
+                      if (field.name === 'deliveryMethod') return false
+                      
+                      // Show fields based on delivery method selection
+                      if (field.dependsOn === 'deliveryMethod') {
+                        return field.showWhen && field.showWhen.includes(formData.deliveryMethod)
+                      }
+                      
+                      // Show other delivery fields that don't depend on method
+                      return !field.dependsOn || formData[field.dependsOn]
+                    }).map((field, index) => {
+                      return (
+                        <motion.div
+                          key={field.name}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          className={field.type === 'textarea' ? 'md:col-span-2' : ''}
+                        >
+                          {field.type === 'checkbox' ? (
+                            <div className="flex items-center space-x-3">
+                              <input
+                                type="checkbox"
+                                id={field.name}
+                                checked={formData[field.name] || false}
+                                onChange={(e) => handleInputChange(field.name, e.target.checked)}
+                                className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+                              />
+                              <div>
+                                <label htmlFor={field.name} className="text-sm font-medium text-gray-700">
+                                  {field.label}
+                                </label>
+                                {field.description && (
+                                  <p className="text-xs text-gray-500 mt-1">{field.description}</p>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        ) : field.type === 'select' ? (
-                          <FormField
-                            type="select"
-                            label={field.label}
-                            value={formData[field.name] || ''}
-                            onChange={(e) => handleInputChange(field.name, e.target.value)}
-                            options={field.options}
-                            className="w-full"
-                          />
-                        ) : (
-                          <FormField
-                            type={field.type}
-                            label={field.label}
-                            value={formData[field.name] || ''}
-                            onChange={(e) => handleInputChange(field.name, field.type === 'number' ? parseInt(e.target.value) || 0 : e.target.value)}
-                            className="w-full"
-                          />
-                        )}
-                        {field.description && field.type !== 'checkbox' && (
-                          <p className="text-xs text-gray-500 mt-1">{field.description}</p>
-                        )}
-                      </motion.div>
-                    )
-                  })}
+                          ) : field.type === 'select' ? (
+                            <FormField
+                              type="select"
+                              label={field.label}
+                              value={formData[field.name] || ''}
+                              onChange={(e) => handleInputChange(field.name, e.target.value)}
+                              options={field.options}
+                              className="w-full"
+                            />
+                          ) : (
+                            <FormField
+                              type={field.type}
+                              label={field.label}
+                              value={formData[field.name] || ''}
+                              onChange={(e) => handleInputChange(field.name, field.type === 'number' ? parseInt(e.target.value) || 0 : e.target.value)}
+                              className="w-full"
+                            />
+                          )}
+                          {field.description && field.type !== 'checkbox' && (
+                            <p className="text-xs text-gray-500 mt-1">{field.description}</p>
+                          )}
+                        </motion.div>
+                      )
+                    })}
+                  </div>
+                  
+                  {/* Delivery Method Specific Fields */}
+                  {formData.deliveryMethod === 'instant' && (
+                    <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <h4 className="text-sm font-medium text-blue-900 mb-3 flex items-center">
+                        <ApperIcon name="Download" size={16} className="mr-2" />
+                        Instant Download Settings
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          type="number"
+                          label="Link Expiration (hours)"
+                          value={formData.linkExpiration || ''}
+                          onChange={(e) => handleInputChange('linkExpiration', parseInt(e.target.value) || 0)}
+                          className="w-full"
+                        />
+                        <FormField
+                          type="text"
+                          label="IP Restriction"
+                          value={formData.ipRestriction || ''}
+                          onChange={(e) => handleInputChange('ipRestriction', e.target.value)}
+                          className="w-full"
+                        />
+                      </div>
+                    </div>
+                  )}
+                  
+                  {formData.deliveryMethod === 'email' && (
+                    <div className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200">
+                      <h4 className="text-sm font-medium text-green-900 mb-3 flex items-center">
+                        <ApperIcon name="Mail" size={16} className="mr-2" />
+                        Email Delivery Settings
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          type="select"
+                          label="Email Template"
+                          value={formData.emailTemplate || ''}
+                          onChange={(e) => handleInputChange('emailTemplate', e.target.value)}
+                          options={[
+                            { value: 'default', label: 'Default Template' },
+                            { value: 'professional', label: 'Professional Template' },
+                            { value: 'branded', label: 'Branded Template' },
+                            { value: 'custom', label: 'Custom Template' }
+                          ]}
+                          className="w-full"
+                        />
+                        <FormField
+                          type="number"
+                          label="Attachment Size Limit (MB)"
+                          value={formData.attachmentSizeLimit || ''}
+                          onChange={(e) => handleInputChange('attachmentSizeLimit', parseInt(e.target.value) || 0)}
+                          className="w-full"
+                        />
+                      </div>
+                    </div>
+                  )}
+                  
+                  {formData.deliveryMethod === 'account' && (
+                    <div className="mt-6 p-4 bg-purple-50 rounded-lg border border-purple-200">
+                      <h4 className="text-sm font-medium text-purple-900 mb-3 flex items-center">
+                        <ApperIcon name="User" size={16} className="mr-2" />
+                        Account-Based Access Settings
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          type="number"
+                          label="Device Limit"
+                          value={formData.deviceLimit || ''}
+                          onChange={(e) => handleInputChange('deviceLimit', parseInt(e.target.value) || 0)}
+                          className="w-full"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
+              )}
 
               {/* Licensing Options Section */}
               <div>
