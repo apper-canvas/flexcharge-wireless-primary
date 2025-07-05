@@ -144,9 +144,17 @@ const BillingModelSelection = () => {
               </Button>
             </div>
           </div>
-        </Card>
+</Card>
         
         <div className="text-center mt-6">
+          <Button
+            variant="outline"
+            onClick={() => navigate('/billing-models')}
+            icon="Plus"
+            className="mb-4"
+          >
+            Add Billing Model
+          </Button>
           <p className="text-sm text-gray-600">
             You can always add or remove billing models later in your settings
           </p>
