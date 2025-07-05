@@ -11,9 +11,9 @@ import billingModelConfigService from '@/services/api/billingModelConfigService'
 const MarketplaceConfig = () => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     // Commission Structure
-    commissionType: 'category',
+    commissionType: '',
     baseCommissionRate: 10,
     categoryCommissionRates: [
       { category: 'Electronics', rate: 8 },
@@ -25,10 +25,19 @@ const MarketplaceConfig = () => {
       { tier: 'Silver', rate: 12 },
       { tier: 'Gold', rate: 8 }
     ],
+    volumeBasedRates: [
+      { minAmount: 0, maxAmount: 1000, rate: 15 },
+      { minAmount: 1001, maxAmount: 5000, rate: 12 },
+      { minAmount: 5001, maxAmount: null, rate: 8 }
+    ],
     // Additional Fees
-    listingFee: 5,
-    transactionFee: 2.5,
-    paymentProcessingFee: 2.9,
+    listingFeeEnabled: false,
+    listingFeeAmount: 5,
+    listingFeeFrequency: 'one-time',
+    transactionFeeEnabled: false,
+    transactionFeeType: 'fixed',
+    transactionFeeAmount: 2.5,
+    paymentProcessing: 'platform-pays',
     // Payout Settings
     payoutSchedule: 'monthly',
     minimumPayout: 50,
@@ -110,10 +119,33 @@ const MarketplaceConfig = () => {
     }))
   }
 
-  const removeVendorTierRate = (index) => {
+const removeVendorTierRate = (index) => {
     setFormData(prev => ({
       ...prev,
       vendorTierRates: prev.vendorTierRates.filter((_, i) => i !== index)
+    }))
+  }
+
+  const handleVolumeBasedRateChange = (index, field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      volumeBasedRates: prev.volumeBasedRates.map((item, i) => 
+        i === index ? { ...item, [field]: value } : item
+      )
+    }))
+  }
+
+  const addVolumeBasedRate = () => {
+    setFormData(prev => ({
+      ...prev,
+      volumeBasedRates: [...prev.volumeBasedRates, { minAmount: 0, maxAmount: null, rate: 10 }]
+    }))
+  }
+
+  const removeVolumeBasedRate = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      volumeBasedRates: prev.volumeBasedRates.filter((_, i) => i !== index)
     }))
   }
 
@@ -201,14 +233,17 @@ const MarketplaceConfig = () => {
                   placeholder="0.00"
                   className="w-full"
                 />
-                <FormField
+<FormField
                   type="select"
                   label="Commission Type"
                   value={formData.commissionType}
                   onChange={(e) => handleInputChange('commissionType', e.target.value)}
                   options={[
-                    { value: 'category', label: 'Category-based Commission' },
-                    { value: 'vendor_tier', label: 'Vendor Tier-based Commission' }
+                    { value: '', label: 'Select Commission Type...' },
+                    { value: 'flat-rate', label: 'Flat rate for all' },
+                    { value: 'category', label: 'Category-based' },
+                    { value: 'vendor_tier', label: 'Vendor tier-based' },
+                    { value: 'volume-based', label: 'Volume-based' }
                   ]}
                   className="w-full"
                   required
@@ -313,49 +348,185 @@ const MarketplaceConfig = () => {
                     </div>
                   </div>
                 </motion.div>
+)}
+
+              {formData.commissionType === 'volume-based' && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-medium text-gray-900">Volume-based Commission Rates</h3>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={addVolumeBasedRate}
+                        icon="Plus"
+                      >
+                        Add Volume Tier
+                      </Button>
+                    </div>
+                    <div className="space-y-3">
+                      {formData.volumeBasedRates.map((item, index) => (
+                        <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
+                          <FormField
+                            type="number"
+                            placeholder="Min Amount"
+                            value={item.minAmount}
+                            onChange={(e) => handleVolumeBasedRateChange(index, 'minAmount', parseFloat(e.target.value) || 0)}
+                            step="0.01"
+                          />
+                          <FormField
+                            type="number"
+                            placeholder="Max Amount"
+                            value={item.maxAmount || ''}
+                            onChange={(e) => handleVolumeBasedRateChange(index, 'maxAmount', e.target.value ? parseFloat(e.target.value) : null)}
+                            step="0.01"
+                          />
+                          <FormField
+                            type="number"
+                            placeholder="Rate (%)"
+                            value={item.rate}
+                            onChange={(e) => handleVolumeBasedRateChange(index, 'rate', parseFloat(e.target.value) || 0)}
+                            step="0.1"
+                          />
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => removeVolumeBasedRate(index)}
+                            icon="Trash2"
+                            className="text-red-600 hover:text-red-700"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
               )}
             </div>
           </Card>
 
-          {/* Additional Fees */}
+{/* Additional Fees */}
           <Card className="p-6 mb-6">
             <div className="flex items-center mb-6">
               <ApperIcon name="DollarSign" className="w-5 h-5 text-primary mr-2" />
               <h2 className="text-xl font-semibold text-gray-900">Additional Fees</h2>
             </div>
-<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <FormField
-                type="number"
-                label="Listing Fee ($)"
-                value={formData.listingFee}
-                onChange={(e) => handleInputChange('listingFee', Math.max(0, parseFloat(e.target.value) || 0))}
-                step="0.01"
-                min="0"
-                placeholder="0.00"
-                className="w-full"
-              />
-              <FormField
-                type="number"
-                label="Transaction Fee (%)"
-                value={formData.transactionFee}
-                onChange={(e) => handleInputChange('transactionFee', Math.max(0, Math.min(100, parseFloat(e.target.value) || 0)))}
-                step="0.01"
-                min="0"
-                max="100"
-                placeholder="0.00"
-                className="w-full"
-              />
-              <FormField
-                type="number"
-                label="Payment Processing Fee (%)"
-                value={formData.paymentProcessingFee}
-                onChange={(e) => handleInputChange('paymentProcessingFee', Math.max(0, Math.min(100, parseFloat(e.target.value) || 0)))}
-                step="0.01"
-                min="0"
-                max="100"
-                placeholder="0.00"
-                className="w-full"
-              />
+            <div className="space-y-6">
+              {/* Listing Fee */}
+              <div className="border border-gray-200 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="checkbox"
+                      id="listingFeeEnabled"
+                      checked={formData.listingFeeEnabled}
+                      onChange={(e) => handleInputChange('listingFeeEnabled', e.target.checked)}
+                      className="w-4 h-4 text-primary bg-white border-gray-300 rounded focus:ring-primary focus:ring-2"
+                    />
+                    <label htmlFor="listingFeeEnabled" className="text-sm font-medium text-gray-700 cursor-pointer">
+                      Listing Fee
+                    </label>
+                  </div>
+                </div>
+                {formData.listingFeeEnabled && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    transition={{ duration: 0.3 }}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                  >
+                    <FormField
+                      type="number"
+                      label="Amount ($)"
+                      value={formData.listingFeeAmount}
+                      onChange={(e) => handleInputChange('listingFeeAmount', Math.max(0, parseFloat(e.target.value) || 0))}
+                      step="0.01"
+                      min="0"
+                      placeholder="0.00"
+                      className="w-full"
+                    />
+                    <FormField
+                      type="select"
+                      label="Frequency"
+                      value={formData.listingFeeFrequency}
+                      onChange={(e) => handleInputChange('listingFeeFrequency', e.target.value)}
+                      options={[
+                        { value: 'one-time', label: 'One-time' },
+                        { value: 'monthly', label: 'Monthly' }
+                      ]}
+                      className="w-full"
+                    />
+                  </motion.div>
+                )}
+              </div>
+
+              {/* Transaction Fee */}
+              <div className="border border-gray-200 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="checkbox"
+                      id="transactionFeeEnabled"
+                      checked={formData.transactionFeeEnabled}
+                      onChange={(e) => handleInputChange('transactionFeeEnabled', e.target.checked)}
+                      className="w-4 h-4 text-primary bg-white border-gray-300 rounded focus:ring-primary focus:ring-2"
+                    />
+                    <label htmlFor="transactionFeeEnabled" className="text-sm font-medium text-gray-700 cursor-pointer">
+                      Transaction Fee
+                    </label>
+                  </div>
+                </div>
+                {formData.transactionFeeEnabled && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    transition={{ duration: 0.3 }}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                  >
+                    <FormField
+                      type="select"
+                      label="Type"
+                      value={formData.transactionFeeType}
+                      onChange={(e) => handleInputChange('transactionFeeType', e.target.value)}
+                      options={[
+                        { value: 'fixed', label: 'Fixed amount' },
+                        { value: 'percentage', label: 'Percentage' }
+                      ]}
+                      className="w-full"
+                    />
+                    <FormField
+                      type="number"
+                      label={formData.transactionFeeType === 'fixed' ? 'Amount ($)' : 'Percentage (%)'}
+                      value={formData.transactionFeeAmount}
+                      onChange={(e) => handleInputChange('transactionFeeAmount', Math.max(0, parseFloat(e.target.value) || 0))}
+                      step="0.01"
+                      min="0"
+                      max={formData.transactionFeeType === 'percentage' ? 100 : undefined}
+                      placeholder="0.00"
+                      className="w-full"
+                    />
+                  </motion.div>
+                )}
+              </div>
+
+              {/* Payment Processing */}
+              <div className="border border-gray-200 rounded-lg p-4">
+                <FormField
+                  type="select"
+                  label="Payment Processing"
+                  value={formData.paymentProcessing}
+                  onChange={(e) => handleInputChange('paymentProcessing', e.target.value)}
+                  options={[
+                    { value: 'platform-pays', label: 'Platform pays' },
+                    { value: 'deduct-from-vendor', label: 'Deduct from vendor' },
+                    { value: 'split', label: 'Split' }
+                  ]}
+                  className="w-full"
+                />
+              </div>
             </div>
           </Card>
 
