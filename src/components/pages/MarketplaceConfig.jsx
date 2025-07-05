@@ -38,14 +38,20 @@ const [formData, setFormData] = useState({
     transactionFeeType: 'fixed',
     transactionFeeAmount: 2.5,
     paymentProcessing: 'platform-pays',
+    platformPercentage: 70,
+    vendorPercentage: 30,
     // Payout Settings
     payoutSchedule: 'monthly',
+    payoutScheduleDay: 'monday',
+    payoutScheduleDate: 1,
     minimumPayout: 50,
     holdPeriod: 7,
     // Vendor Requirements
     kycRequired: true,
+    kycDocuments: [],
     businessVendorsAllowed: true,
-    internationalVendors: false
+    internationalVendors: false,
+    supportedCountries: []
   })
   const [configData, setConfigData] = useState(null)
   const [saving, setSaving] = useState(false)
@@ -512,7 +518,7 @@ const removeVendorTierRate = (index) => {
                 )}
               </div>
 
-              {/* Payment Processing */}
+{/* Payment Processing */}
               <div className="border border-gray-200 rounded-lg p-4">
                 <FormField
                   type="select"
@@ -526,6 +532,45 @@ const removeVendorTierRate = (index) => {
                   ]}
                   className="w-full"
                 />
+                {formData.paymentProcessing === 'split' && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    transition={{ duration: 0.3 }}
+                    className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4"
+                  >
+                    <FormField
+                      type="number"
+                      label="Platform Percentage (%)"
+                      value={formData.platformPercentage}
+                      onChange={(e) => {
+                        const value = Math.max(0, Math.min(100, parseFloat(e.target.value) || 0));
+                        handleInputChange('platformPercentage', value);
+                        handleInputChange('vendorPercentage', 100 - value);
+                      }}
+                      step="0.1"
+                      min="0"
+                      max="100"
+                      placeholder="70"
+                      className="w-full"
+                    />
+                    <FormField
+                      type="number"
+                      label="Vendor Percentage (%)"
+                      value={formData.vendorPercentage}
+                      onChange={(e) => {
+                        const value = Math.max(0, Math.min(100, parseFloat(e.target.value) || 0));
+                        handleInputChange('vendorPercentage', value);
+                        handleInputChange('platformPercentage', 100 - value);
+                      }}
+                      step="0.1"
+                      min="0"
+                      max="100"
+                      placeholder="30"
+                      className="w-full"
+                    />
+                  </motion.div>
+                )}
               </div>
             </div>
           </Card>
@@ -536,35 +581,76 @@ const removeVendorTierRate = (index) => {
               <ApperIcon name="Calendar" className="w-5 h-5 text-primary mr-2" />
               <h2 className="text-xl font-semibold text-gray-900">Payout Settings</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <FormField
-                type="select"
-                label="Payout Schedule"
-                value={formData.payoutSchedule}
-                onChange={(e) => handleInputChange('payoutSchedule', e.target.value)}
-                options={[
-                  { value: 'daily', label: 'Daily' },
-                  { value: 'weekly', label: 'Weekly' },
-                  { value: 'bi_weekly', label: 'Bi-weekly' },
-                  { value: 'monthly', label: 'Monthly' }
-                ]}
-                className="w-full"
-              />
-              <FormField
-                type="number"
-                label="Minimum Payout ($)"
-                value={formData.minimumPayout}
-                onChange={(e) => handleInputChange('minimumPayout', parseFloat(e.target.value) || 0)}
-                step="0.01"
-                className="w-full"
-              />
-              <FormField
-                type="number"
-                label="Hold Period (days)"
-                value={formData.holdPeriod}
-                onChange={(e) => handleInputChange('holdPeriod', parseInt(e.target.value) || 0)}
-                className="w-full"
-              />
+<div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  type="select"
+                  label="Payout Schedule"
+                  value={formData.payoutSchedule}
+                  onChange={(e) => handleInputChange('payoutSchedule', e.target.value)}
+                  options={[
+                    { value: 'immediate', label: 'Immediate' },
+                    { value: 'daily', label: 'Daily' },
+                    { value: 'weekly', label: 'Weekly' },
+                    { value: 'bi_weekly', label: 'Bi-weekly' },
+                    { value: 'monthly', label: 'Monthly' },
+                    { value: 'net_15', label: 'Net-15' },
+                    { value: 'net_30', label: 'Net-30' },
+                    { value: 'net_45', label: 'Net-45' }
+                  ]}
+                  className="w-full"
+                />
+                {formData.payoutSchedule === 'weekly' && (
+                  <FormField
+                    type="select"
+                    label="Payout Day"
+                    value={formData.payoutScheduleDay}
+                    onChange={(e) => handleInputChange('payoutScheduleDay', e.target.value)}
+                    options={[
+                      { value: 'monday', label: 'Monday' },
+                      { value: 'tuesday', label: 'Tuesday' },
+                      { value: 'wednesday', label: 'Wednesday' },
+                      { value: 'thursday', label: 'Thursday' },
+                      { value: 'friday', label: 'Friday' },
+                      { value: 'saturday', label: 'Saturday' },
+                      { value: 'sunday', label: 'Sunday' }
+                    ]}
+                    className="w-full"
+                  />
+                )}
+                {formData.payoutSchedule === 'monthly' && (
+                  <FormField
+                    type="select"
+                    label="Payout Date"
+                    value={formData.payoutScheduleDate}
+                    onChange={(e) => handleInputChange('payoutScheduleDate', parseInt(e.target.value))}
+                    options={[
+                      ...Array.from({ length: 28 }, (_, i) => ({
+                        value: i + 1,
+                        label: `${i + 1}${i === 0 ? 'st' : i === 1 ? 'nd' : i === 2 ? 'rd' : 'th'} of month`
+                      }))
+                    ]}
+                    className="w-full"
+                  />
+                )}
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  type="number"
+                  label="Minimum Payout ($)"
+                  value={formData.minimumPayout}
+                  onChange={(e) => handleInputChange('minimumPayout', parseFloat(e.target.value) || 0)}
+                  step="0.01"
+                  className="w-full"
+                />
+                <FormField
+                  type="number"
+                  label="Hold Period (days)"
+                  value={formData.holdPeriod}
+                  onChange={(e) => handleInputChange('holdPeriod', parseInt(e.target.value) || 0)}
+                  className="w-full"
+                />
+              </div>
             </div>
           </Card>
 
@@ -590,6 +676,45 @@ const removeVendorTierRate = (index) => {
                   <p className="text-xs text-gray-500 mt-1">Require Know Your Customer verification for all vendors</p>
                 </div>
               </div>
+              
+              {formData.kycRequired && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  transition={{ duration: 0.3 }}
+                  className="ml-7 bg-white border border-gray-200 rounded-lg p-4"
+                >
+                  <h4 className="text-sm font-medium text-gray-700 mb-3">Required Documents</h4>
+                  <div className="space-y-2">
+                    {[
+                      { id: 'government_id', label: 'Government-issued ID' },
+                      { id: 'address_proof', label: 'Proof of Address' },
+                      { id: 'business_license', label: 'Business License (if applicable)' },
+                      { id: 'tax_document', label: 'Tax Document/EIN' },
+                      { id: 'bank_statement', label: 'Bank Statement' },
+                      { id: 'utility_bill', label: 'Utility Bill' }
+                    ].map(doc => (
+                      <div key={doc.id} className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id={doc.id}
+                          checked={formData.kycDocuments.includes(doc.id)}
+                          onChange={(e) => {
+                            const updatedDocs = e.target.checked
+                              ? [...formData.kycDocuments, doc.id]
+                              : formData.kycDocuments.filter(d => d !== doc.id);
+                            handleInputChange('kycDocuments', updatedDocs);
+                          }}
+                          className="w-4 h-4 text-primary bg-white border-gray-300 rounded focus:ring-primary focus:ring-2"
+                        />
+                        <label htmlFor={doc.id} className="text-sm text-gray-600 cursor-pointer">
+                          {doc.label}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
               
               <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                 <input
@@ -622,6 +747,44 @@ const removeVendorTierRate = (index) => {
                   <p className="text-xs text-gray-500 mt-1">Allow vendors from international markets</p>
                 </div>
               </div>
+              
+              {formData.internationalVendors && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  transition={{ duration: 0.3 }}
+                  className="ml-7 bg-white border border-gray-200 rounded-lg p-4"
+                >
+                  <h4 className="text-sm font-medium text-gray-700 mb-3">Supported Countries</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-48 overflow-y-auto">
+                    {[
+                      'United States', 'Canada', 'United Kingdom', 'Germany', 'France', 'Italy', 'Spain', 'Netherlands',
+                      'Sweden', 'Norway', 'Denmark', 'Finland', 'Australia', 'New Zealand', 'Japan', 'South Korea',
+                      'Singapore', 'Hong Kong', 'Switzerland', 'Austria', 'Belgium', 'Ireland', 'Portugal', 'Brazil',
+                      'Mexico', 'Argentina', 'Chile', 'Colombia', 'India', 'Thailand', 'Malaysia', 'Philippines',
+                      'Indonesia', 'Vietnam', 'Taiwan', 'Israel', 'UAE', 'Saudi Arabia', 'South Africa', 'Nigeria'
+                    ].map(country => (
+                      <div key={country} className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id={country}
+                          checked={formData.supportedCountries.includes(country)}
+                          onChange={(e) => {
+                            const updatedCountries = e.target.checked
+                              ? [...formData.supportedCountries, country]
+                              : formData.supportedCountries.filter(c => c !== country);
+                            handleInputChange('supportedCountries', updatedCountries);
+                          }}
+                          className="w-4 h-4 text-primary bg-white border-gray-300 rounded focus:ring-primary focus:ring-2"
+                        />
+                        <label htmlFor={country} className="text-sm text-gray-600 cursor-pointer">
+                          {country}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
             </div>
           </Card>
 
