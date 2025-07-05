@@ -301,6 +301,109 @@ const UsageConfig = () => {
                 </motion.div>
               ))}
             </div>
+</Card>
+
+          {/* Aggregation Configuration */}
+          <Card className="p-6 mb-6">
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="p-2 bg-accent/10 rounded-lg">
+                <ApperIcon name="Calculator" size={20} className="text-accent" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Aggregation Configuration</h3>
+                <p className="text-sm text-gray-600">Configure how usage data is aggregated and measured</p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Aggregation Method */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+              >
+                <FormField
+                  type="select"
+                  label="Aggregation Method"
+                  value={formData.aggregationMethod || ''}
+                  onChange={(e) => handleInputChange('aggregationMethod', e.target.value)}
+                  options={[
+                    { value: 'sum', label: 'Sum - Total of all usage values' },
+                    { value: 'max', label: 'Max - Maximum usage value recorded' },
+                    { value: 'average', label: 'Average - Mean of all usage values' },
+                    { value: 'unique_count', label: 'Unique Count - Count of distinct values' }
+                  ]}
+                  className="w-full"
+                />
+                <p className="text-xs text-gray-500 mt-1">How usage data points are combined for billing calculations</p>
+              </motion.div>
+
+              {/* Reset Period */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <FormField
+                  type="select"
+                  label="Reset Period"
+                  value={formData.resetPeriod || ''}
+                  onChange={(e) => handleInputChange('resetPeriod', e.target.value)}
+                  options={[
+                    { value: 'never', label: 'Never - Cumulative usage' },
+                    { value: 'daily', label: 'Daily - Reset every day' },
+                    { value: 'weekly', label: 'Weekly - Reset every week' },
+                    { value: 'monthly', label: 'Monthly - Reset every month' },
+                    { value: 'annually', label: 'Annually - Reset every year' }
+                  ]}
+                  className="w-full"
+                />
+                <p className="text-xs text-gray-500 mt-1">How often usage counters are reset to zero</p>
+              </motion.div>
+            </div>
+
+            {/* Aggregation Preview */}
+            {(formData.aggregationMethod || formData.resetPeriod) && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="mt-6 p-4 bg-gray-50 rounded-lg border"
+              >
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="p-2 bg-accent/10 rounded-lg">
+                    <ApperIcon name="BarChart3" size={16} className="text-accent" />
+                  </div>
+                  <h4 className="text-sm font-medium text-gray-900">Aggregation Preview</h4>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-gray-500">Method:</span>
+                    <p className="font-medium">
+                      {formData.aggregationMethod 
+                        ? configData.fields.find(f => f.name === 'aggregationMethod')?.options.find(o => o.value === formData.aggregationMethod)?.label.split(' - ')[0]
+                        : 'Not specified'}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Reset Period:</span>
+                    <p className="font-medium">
+                      {formData.resetPeriod 
+                        ? configData.fields.find(f => f.name === 'resetPeriod')?.options.find(o => o.value === formData.resetPeriod)?.label.split(' - ')[0]
+                        : 'Not specified'}
+                    </p>
+                  </div>
+                </div>
+                {formData.aggregationMethod && formData.resetPeriod && (
+                  <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+                    <p className="text-xs text-blue-800">
+                      <strong>Example:</strong> Usage will be calculated using {formData.aggregationMethod === 'sum' ? 'the total' : formData.aggregationMethod === 'max' ? 'the maximum' : formData.aggregationMethod === 'average' ? 'the average' : 'the unique count'} of all {formData.unitOfMeasure || 'usage'} values
+                      {formData.resetPeriod !== 'never' ? ` and reset ${formData.resetPeriod}` : ' with no reset period'}.
+                    </p>
+                  </div>
+                )}
+              </motion.div>
+            )}
           </Card>
 
           <Card className="p-6">
