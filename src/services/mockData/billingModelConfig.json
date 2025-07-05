@@ -3,618 +3,230 @@
     "Id": 1,
     "modelType": "one-time",
     "title": "One-Time Purchase Configuration",
-    "description": "Configure settings for one-time purchase billing",
-"defaultSettings": {
-      "deliveryMethod": "instant_download",
-      "downloadLimit": 3,
-      "linkExpiration": 7,
-      "ipRestriction": false,
-      "emailTemplate": "default",
-      "attachmentSizeLimit": 100,
-      "accessDuration": 365,
-      "deviceLimit": 0,
-      "licenseType": "single_user",
+    "description": "Configure your one-time purchase billing model with delivery options, licensing, and payment settings",
+    "defaultSettings": {
+      "deliveryMethod": "instant",
       "generateLicenseKeys": false,
-      "activationRequired": false,
       "acceptPreorders": false,
-      "chargeTiming": "immediate",
       "partialPayments": false,
-      "minimumDeposit": 0,
-      "refundPolicyType": "standard",
-      "policyText": "Standard refund policy applies to all purchases.",
-      "enableInstantDownload": true,
-      "requireEmailVerification": false,
-      "allowGuestCheckout": true,
-      "currency": "USD",
-      "taxIncluded": false,
-      "enableDiscounts": true,
-      "enableBulkPricing": false,
-      "enableRefunds": true,
-      "refundPeriod": 30,
-      "paymentMethods": ["credit_card", "paypal", "bank_transfer"]
+      "refundPolicyType": "standard"
     },
-"fields": [
+    "fields": [
       {
         "name": "deliveryMethod",
         "label": "Delivery Method",
         "type": "select",
+        "section": "delivery",
+        "required": true,
         "options": [
-          { "value": "instant_download", "label": "Instant Download" },
-          { "value": "email_delivery", "label": "Email Delivery" },
-          { "value": "account_access", "label": "Account-Based Access" },
-          { "value": "api_webhook", "label": "API/Webhook" },
-          { "value": "no_delivery", "label": "No Delivery" }
+          { "value": "instant", "label": "Instant Download" },
+          { "value": "email", "label": "Email Delivery" },
+          { "value": "account", "label": "Account-Based Access" },
+          { "value": "api", "label": "API/Webhook" },
+          { "value": "none", "label": "No Delivery" }
         ],
-        "description": "How customers receive their purchased products"
+        "description": "Choose how customers will receive their purchased products"
+      },
+      {
+        "name": "deliveryDelay",
+        "label": "Delivery Delay (hours)",
+        "type": "number",
+        "section": "delivery",
+        "dependsOn": "deliveryMethod",
+        "showWhen": ["email", "api"],
+        "description": "Optional delay before delivery (0 for immediate)"
       },
       {
         "name": "downloadLimit",
         "label": "Download Limit",
         "type": "number",
-        "description": "Maximum number of downloads allowed per purchase (0 = unlimited)"
-      },
-      {
-        "name": "linkExpiration",
-        "label": "Link Expiration (Days)",
-        "type": "number",
-        "description": "Number of days before download links expire"
-      },
-      {
-        "name": "ipRestriction",
-        "label": "IP Restriction",
-        "type": "checkbox",
-        "description": "Restrict downloads to the IP address used during purchase"
-      },
-      {
-        "name": "emailTemplate",
-        "label": "Email Template",
-        "type": "select",
-        "options": [
-          { "value": "default", "label": "Default Template" },
-          { "value": "professional", "label": "Professional Template" },
-          { "value": "minimal", "label": "Minimal Template" },
-          { "value": "custom", "label": "Custom Template" }
-        ],
-        "description": "Email template for delivery notifications"
-      },
-      {
-        "name": "attachmentSizeLimit",
-        "label": "Attachment Size Limit (MB)",
-        "type": "number",
-        "description": "Maximum file size for email attachments"
+        "section": "delivery",
+        "dependsOn": "deliveryMethod",
+        "showWhen": ["instant"],
+        "description": "Maximum number of downloads allowed (0 for unlimited)"
       },
       {
         "name": "accessDuration",
-        "label": "Access Duration (Days)",
+        "label": "Access Duration (days)",
         "type": "number",
-        "description": "How long customers have access to account-based products (0 = lifetime)"
+        "section": "delivery",
+        "dependsOn": "deliveryMethod",
+        "showWhen": ["account"],
+        "description": "How long customers can access the product (0 for lifetime)"
       },
       {
-        "name": "deviceLimit",
-        "label": "Device Limit",
-        "type": "number",
-        "description": "Maximum number of devices that can access the product (0 = unlimited)"
+        "name": "webhookUrl",
+        "label": "Webhook URL",
+        "type": "text",
+        "section": "delivery",
+        "dependsOn": "deliveryMethod",
+        "showWhen": ["api"],
+        "description": "URL to notify when purchase is complete"
       },
       {
         "name": "licenseType",
         "label": "License Type",
         "type": "select",
+        "section": "licensing",
+        "required": true,
         "options": [
-          { "value": "single_user", "label": "Single User" },
-          { "value": "multi_user", "label": "Multi User" },
-          { "value": "commercial", "label": "Commercial" },
-          { "value": "extended", "label": "Extended" },
-          { "value": "enterprise", "label": "Enterprise" }
+          { "value": "personal", "label": "Personal Use Only" },
+          { "value": "commercial", "label": "Commercial Use" },
+          { "value": "extended", "label": "Extended Commercial" },
+          { "value": "custom", "label": "Custom Terms" }
         ],
-        "description": "Type of license granted with purchase"
+        "description": "Define the usage rights for your product"
+      },
+      {
+        "name": "customLicenseTerms",
+        "label": "Custom License Terms",
+        "type": "textarea",
+        "section": "licensing",
+        "dependsOn": "licenseType",
+        "showWhen": ["custom"],
+        "description": "Enter your custom license terms and conditions"
       },
       {
         "name": "generateLicenseKeys",
         "label": "Generate License Keys",
         "type": "checkbox",
+        "section": "licensing",
         "description": "Automatically generate unique license keys for each purchase"
       },
       {
-        "name": "activationRequired",
-        "label": "Activation Required",
-        "type": "checkbox",
-        "description": "Require customers to activate their license before use"
+        "name": "keyFormat",
+        "label": "Key Format",
+        "type": "select",
+        "section": "licensing",
+        "dependsOn": "generateLicenseKeys",
+        "options": [
+          { "value": "uuid", "label": "UUID (36 characters)" },
+          { "value": "alphanumeric", "label": "Alphanumeric (16 characters)" },
+          { "value": "numeric", "label": "Numeric Only (12 digits)" },
+          { "value": "custom", "label": "Custom Format" }
+        ],
+        "description": "Choose the format for generated license keys"
+      },
+      {
+        "name": "customKeyPattern",
+        "label": "Custom Key Pattern",
+        "type": "text",
+        "section": "licensing",
+        "dependsOn": "keyFormat",
+        "showWhen": ["custom"],
+        "description": "Define custom key pattern (e.g., XXX-XXX-XXX where X = random character)"
       },
       {
         "name": "acceptPreorders",
         "label": "Accept Pre-orders",
         "type": "checkbox",
-        "description": "Allow customers to purchase before product is available"
+        "section": "payment",
+        "description": "Allow customers to purchase before the product is available"
       },
       {
         "name": "chargeTiming",
         "label": "Charge Timing",
         "type": "select",
+        "section": "payment",
+        "dependsOn": "acceptPreorders",
         "options": [
-          { "value": "immediate", "label": "Immediate" },
-          { "value": "on_delivery", "label": "On Delivery" },
-          { "value": "on_activation", "label": "On Activation" },
-          { "value": "scheduled", "label": "Scheduled" }
+          { "value": "immediate", "label": "Charge Immediately" },
+          { "value": "on_delivery", "label": "Charge on Delivery" },
+          { "value": "on_release", "label": "Charge on Product Release" }
         ],
-        "description": "When to charge customers for their purchase"
+        "description": "When to charge customers for pre-orders"
+      },
+      {
+        "name": "releaseDate",
+        "label": "Expected Release Date",
+        "type": "date",
+        "section": "payment",
+        "dependsOn": "acceptPreorders",
+        "description": "When the product will be available (optional)"
       },
       {
         "name": "partialPayments",
-        "label": "Partial Payments",
+        "label": "Allow Partial Payments",
         "type": "checkbox",
-        "description": "Allow customers to pay in installments"
+        "section": "payment",
+        "description": "Enable customers to pay in installments"
       },
       {
         "name": "minimumDeposit",
         "label": "Minimum Deposit (%)",
         "type": "number",
-        "description": "Minimum deposit required for partial payments (0-100)"
+        "section": "payment",
+        "dependsOn": "partialPayments",
+        "description": "Minimum percentage required as initial payment"
+      },
+      {
+        "name": "maxInstallments",
+        "label": "Maximum Installments",
+        "type": "number",
+        "section": "payment",
+        "dependsOn": "partialPayments",
+        "description": "Maximum number of payment installments allowed"
       },
       {
         "name": "refundPolicyType",
         "label": "Refund Policy Type",
         "type": "select",
+        "section": "refund",
+        "required": true,
         "options": [
-          { "value": "standard", "label": "Standard Policy" },
-          { "value": "no_refund", "label": "No Refunds" },
-          { "value": "conditional", "label": "Conditional Refunds" },
-          { "value": "custom", "label": "Custom Policy" }
+          { 
+            "value": "none", 
+            "label": "No Refunds",
+            "policyText": "All sales are final. No refunds will be provided under any circumstances."
+          },
+          { 
+            "value": "standard", 
+            "label": "Standard 30-Day Policy",
+            "policyText": "We offer a 30-day money-back guarantee. If you're not satisfied with your purchase, you can request a full refund within 30 days of purchase."
+          },
+          { 
+            "value": "extended", 
+            "label": "Extended 60-Day Policy",
+            "policyText": "We offer a 60-day money-back guarantee. If you're not satisfied with your purchase, you can request a full refund within 60 days of purchase."
+          },
+          { 
+            "value": "conditional", 
+            "label": "Conditional Refund",
+            "policyText": "Refunds are available under specific conditions. Please contact support to discuss your situation and eligibility for a refund."
+          },
+          { 
+            "value": "custom", 
+            "label": "Custom Policy",
+            "policyText": ""
+          }
         ],
-        "description": "Type of refund policy to apply"
+        "description": "Choose your refund policy type"
       },
       {
-        "name": "policyText",
-        "label": "Policy Text",
+        "name": "refundPolicyText",
+        "label": "Refund Policy Text",
         "type": "textarea",
-        "description": "Detailed refund policy text displayed to customers"
+        "section": "refund",
+        "dependsOn": "refundPolicyType",
+        "description": "Detailed refund policy that customers will see"
       },
       {
-        "name": "enableInstantDownload",
-        "label": "Enable Instant Download",
-        "type": "checkbox",
-        "description": "Allow immediate access to digital products after payment"
-      },
-      {
-        "name": "requireEmailVerification",
-        "label": "Require Email Verification",
-        "type": "checkbox",
-        "description": "Verify customer email before processing purchase"
-      },
-      {
-        "name": "allowGuestCheckout",
-        "label": "Allow Guest Checkout",
-        "type": "checkbox",
-        "description": "Enable purchases without account creation"
-      },
-      {
-        "name": "currency",
-        "label": "Default Currency",
-        "type": "select",
-        "options": [
-          { "value": "USD", "label": "US Dollar" },
-          { "value": "EUR", "label": "Euro" },
-          { "value": "GBP", "label": "British Pound" },
-          { "value": "CAD", "label": "Canadian Dollar" }
-        ],
-        "description": "Primary currency for transactions"
-      },
-      {
-        "name": "taxIncluded",
-        "label": "Tax Included in Price",
-        "type": "checkbox",
-        "description": "Display prices with tax included"
-      },
-      {
-        "name": "enableDiscounts",
-        "label": "Enable Discount Codes",
-        "type": "checkbox",
-        "description": "Allow promotional discount codes"
-      },
-      {
-        "name": "enableBulkPricing",
-        "label": "Enable Bulk Pricing",
-        "type": "checkbox",
-        "description": "Offer discounts for quantity purchases"
-      },
-      {
-        "name": "enableRefunds",
-        "label": "Enable Refunds",
-        "type": "checkbox",
-        "description": "Allow refund processing"
-      },
-      {
-        "name": "refundPeriod",
-        "label": "Refund Period (Days)",
+        "name": "refundWindow",
+        "label": "Refund Window (days)",
         "type": "number",
-        "description": "Number of days customers can request refunds"
-      }
-    ]
-  },
-  {
-    "Id": 2,
-    "modelType": "credit",
-    "title": "Credit System Configuration",
-    "description": "Configure settings for credit-based billing",
-    "defaultSettings": {
-      "creditPackages": [
-        { "credits": 100, "price": 10, "bonus": 0 },
-        { "credits": 500, "price": 45, "bonus": 50 },
-        { "credits": 1000, "price": 80, "bonus": 200 }
-      ],
-      "creditExpiration": 365,
-      "enableAutoRecharge": true,
-      "autoRechargeThreshold": 10,
-      "autoRechargeAmount": 100,
-      "enableCreditSharing": false,
-      "minimumBalance": 5,
-      "notifyLowBalance": true,
-      "lowBalanceThreshold": 20,
-      "enableCreditHistory": true,
-      "currency": "USD"
-    },
-    "fields": [
-      {
-        "name": "creditExpiration",
-        "label": "Credit Expiration (Days)",
-        "type": "number",
-        "description": "Number of days before credits expire (0 for never)"
+        "section": "refund",
+        "dependsOn": "refundPolicyType",
+        "showWhen": ["standard", "extended", "conditional"],
+        "description": "Number of days customers have to request a refund"
       },
       {
-        "name": "enableAutoRecharge",
-        "label": "Enable Auto-Recharge",
+        "name": "autoApproveRefunds",
+        "label": "Auto-approve Refunds",
         "type": "checkbox",
-        "description": "Automatically purchase credits when balance is low"
-      },
-      {
-        "name": "autoRechargeThreshold",
-        "label": "Auto-Recharge Threshold",
-        "type": "number",
-        "description": "Trigger auto-recharge when credits fall below this amount"
-      },
-      {
-        "name": "autoRechargeAmount",
-        "label": "Auto-Recharge Amount",
-        "type": "number",
-        "description": "Number of credits to purchase during auto-recharge"
-      },
-      {
-        "name": "enableCreditSharing",
-        "label": "Enable Credit Sharing",
-        "type": "checkbox",
-        "description": "Allow users to share credits with other accounts"
-      },
-      {
-        "name": "minimumBalance",
-        "label": "Minimum Balance",
-        "type": "number",
-        "description": "Minimum credits required to use services"
-      },
-      {
-        "name": "notifyLowBalance",
-        "label": "Notify on Low Balance",
-        "type": "checkbox",
-        "description": "Send notifications when balance is low"
-      },
-      {
-        "name": "lowBalanceThreshold",
-        "label": "Low Balance Threshold",
-        "type": "number",
-        "description": "Send notifications when credits fall below this amount"
-      },
-      {
-        "name": "enableCreditHistory",
-        "label": "Enable Credit History",
-        "type": "checkbox",
-        "description": "Track and display credit usage history"
-      }
-    ]
-  },
-  {
-    "Id": 3,
-    "modelType": "usage",
-    "title": "Usage-Based Configuration",
-    "description": "Configure settings for usage-based billing",
-    "defaultSettings": {
-      "billingCycle": "monthly",
-      "minimumCharge": 5,
-      "freeUsageLimit": 1000,
-      "enableUsageTiers": true,
-      "usageTiers": [
-        { "from": 0, "to": 1000, "rate": 0 },
-        { "from": 1001, "to": 10000, "rate": 0.01 },
-        { "from": 10001, "to": 100000, "rate": 0.008 },
-        { "from": 100001, "to": null, "rate": 0.005 }
-      ],
-      "enableUsageCaps": false,
-      "usageCap": 100000,
-      "enableUsageAlerts": true,
-      "usageAlertThresholds": [50, 75, 90, 100],
-      "enableRealTimeUsage": true,
-      "enableUsageReports": true,
-      "currency": "USD"
-    },
-    "fields": [
-      {
-        "name": "billingCycle",
-        "label": "Billing Cycle",
-        "type": "select",
-        "options": [
-          { "value": "daily", "label": "Daily" },
-          { "value": "weekly", "label": "Weekly" },
-          { "value": "monthly", "label": "Monthly" },
-          { "value": "quarterly", "label": "Quarterly" }
-        ],
-        "description": "How often to bill customers"
-      },
-      {
-        "name": "minimumCharge",
-        "label": "Minimum Charge",
-        "type": "number",
-        "description": "Minimum amount to charge per billing cycle"
-      },
-      {
-        "name": "freeUsageLimit",
-        "label": "Free Usage Limit",
-        "type": "number",
-        "description": "Amount of free usage per billing cycle"
-      },
-      {
-        "name": "enableUsageTiers",
-        "label": "Enable Usage Tiers",
-        "type": "checkbox",
-        "description": "Use tiered pricing based on usage volume"
-      },
-      {
-        "name": "enableUsageCaps",
-        "label": "Enable Usage Caps",
-        "type": "checkbox",
-        "description": "Limit maximum usage per billing cycle"
-      },
-      {
-        "name": "usageCap",
-        "label": "Usage Cap",
-        "type": "number",
-        "description": "Maximum usage allowed per billing cycle"
-      },
-      {
-        "name": "enableUsageAlerts",
-        "label": "Enable Usage Alerts",
-        "type": "checkbox",
-        "description": "Send alerts when usage thresholds are reached"
-      },
-      {
-        "name": "enableRealTimeUsage",
-        "label": "Enable Real-Time Usage",
-        "type": "checkbox",
-        "description": "Track and display usage in real-time"
-      },
-      {
-        "name": "enableUsageReports",
-        "label": "Enable Usage Reports",
-        "type": "checkbox",
-        "description": "Generate detailed usage reports"
-      }
-    ]
-  },
-  {
-    "Id": 4,
-    "modelType": "marketplace",
-    "title": "Marketplace Configuration",
-    "description": "Configure settings for marketplace billing",
-    "defaultSettings": {
-      "commissionRate": 15,
-      "enableTieredCommission": false,
-      "commissionTiers": [
-        { "from": 0, "to": 1000, "rate": 20 },
-        { "from": 1001, "to": 5000, "rate": 15 },
-        { "from": 5001, "to": null, "rate": 10 }
-      ],
-      "payoutFrequency": "weekly",
-      "minimumPayout": 25,
-      "enableInstantPayout": true,
-      "instantPayoutFee": 1.5,
-      "enableVendorDashboard": true,
-      "enableVendorReports": true,
-      "enableDispute": true,
-      "disputeResolutionPeriod": 14,
-      "enableProductReviews": true,
-      "enableVendorVerification": true,
-      "currency": "USD"
-    },
-    "fields": [
-      {
-        "name": "commissionRate",
-        "label": "Commission Rate (%)",
-        "type": "number",
-        "description": "Percentage commission on vendor sales"
-      },
-      {
-        "name": "enableTieredCommission",
-        "label": "Enable Tiered Commission",
-        "type": "checkbox",
-        "description": "Use different commission rates based on sales volume"
-      },
-      {
-        "name": "payoutFrequency",
-        "label": "Payout Frequency",
-        "type": "select",
-        "options": [
-          { "value": "daily", "label": "Daily" },
-          { "value": "weekly", "label": "Weekly" },
-          { "value": "bi-weekly", "label": "Bi-weekly" },
-          { "value": "monthly", "label": "Monthly" }
-        ],
-        "description": "How often to pay vendors"
-      },
-      {
-        "name": "minimumPayout",
-        "label": "Minimum Payout Amount",
-        "type": "number",
-        "description": "Minimum amount required before payout"
-      },
-      {
-        "name": "enableInstantPayout",
-        "label": "Enable Instant Payout",
-        "type": "checkbox",
-        "description": "Allow vendors to request immediate payouts"
-      },
-      {
-        "name": "instantPayoutFee",
-        "label": "Instant Payout Fee (%)",
-        "type": "number",
-        "description": "Fee charged for instant payouts"
-      },
-      {
-        "name": "enableVendorDashboard",
-        "label": "Enable Vendor Dashboard",
-        "type": "checkbox",
-        "description": "Provide analytics dashboard for vendors"
-      },
-      {
-        "name": "enableVendorReports",
-        "label": "Enable Vendor Reports",
-        "type": "checkbox",
-        "description": "Generate sales reports for vendors"
-      },
-      {
-        "name": "enableDispute",
-        "label": "Enable Dispute Resolution",
-        "type": "checkbox",
-        "description": "Handle transaction disputes"
-      },
-      {
-        "name": "disputeResolutionPeriod",
-        "label": "Dispute Resolution Period (Days)",
-        "type": "number",
-        "description": "Time limit for dispute resolution"
-      },
-      {
-        "name": "enableProductReviews",
-        "label": "Enable Product Reviews",
-        "type": "checkbox",
-        "description": "Allow customers to review products"
-      },
-      {
-        "name": "enableVendorVerification",
-        "label": "Enable Vendor Verification",
-        "type": "checkbox",
-        "description": "Verify vendor identity before approval"
-      }
-    ]
-  },
-  {
-    "Id": 5,
-    "modelType": "milestone",
-    "title": "Milestone/Project Configuration",
-    "description": "Configure settings for milestone-based billing",
-    "defaultSettings": {
-      "enableProjectTemplates": true,
-      "defaultMilestones": 3,
-      "enableMilestoneApproval": true,
-      "approvalTimeout": 7,
-      "enablePartialPayments": true,
-      "enableEscrowService": true,
-      "escrowFee": 2.5,
-      "enableProjectTracking": true,
-      "enableTimeTracking": true,
-      "enableFileSharing": true,
-      "maxFileSize": 10,
-      "enableCommunication": true,
-      "enableContractTemplates": true,
-      "enableDispute": true,
-      "disputeResolutionPeriod": 14,
-      "currency": "USD"
-    },
-    "fields": [
-      {
-        "name": "enableProjectTemplates",
-        "label": "Enable Project Templates",
-        "type": "checkbox",
-        "description": "Provide pre-defined project templates"
-      },
-      {
-        "name": "defaultMilestones",
-        "label": "Default Number of Milestones",
-        "type": "number",
-        "description": "Default milestone count for new projects"
-      },
-      {
-        "name": "enableMilestoneApproval",
-        "label": "Enable Milestone Approval",
-        "type": "checkbox",
-        "description": "Require client approval before milestone payment"
-      },
-      {
-        "name": "approvalTimeout",
-        "label": "Approval Timeout (Days)",
-        "type": "number",
-        "description": "Auto-approve milestones after this period"
-      },
-      {
-        "name": "enablePartialPayments",
-        "label": "Enable Partial Payments",
-        "type": "checkbox",
-        "description": "Allow partial milestone payments"
-      },
-      {
-        "name": "enableEscrowService",
-        "label": "Enable Escrow Service",
-        "type": "checkbox",
-        "description": "Hold payments in escrow until milestone completion"
-      },
-      {
-        "name": "escrowFee",
-        "label": "Escrow Fee (%)",
-        "type": "number",
-        "description": "Fee charged for escrow services"
-      },
-      {
-        "name": "enableProjectTracking",
-        "label": "Enable Project Tracking",
-        "type": "checkbox",
-        "description": "Track project progress and milestones"
-      },
-      {
-        "name": "enableTimeTracking",
-        "label": "Enable Time Tracking",
-        "type": "checkbox",
-        "description": "Track time spent on project tasks"
-      },
-      {
-        "name": "enableFileSharing",
-        "label": "Enable File Sharing",
-        "type": "checkbox",
-        "description": "Allow file sharing between parties"
-      },
-      {
-        "name": "maxFileSize",
-        "label": "Maximum File Size (MB)",
-        "type": "number",
-        "description": "Maximum file size for uploads"
-      },
-      {
-        "name": "enableCommunication",
-        "label": "Enable Communication Tools",
-        "type": "checkbox",
-        "description": "Provide messaging and communication features"
-      },
-      {
-        "name": "enableContractTemplates",
-        "label": "Enable Contract Templates",
-        "type": "checkbox",
-        "description": "Provide pre-defined contract templates"
-      },
-      {
-        "name": "enableDispute",
-        "label": "Enable Dispute Resolution",
-        "type": "checkbox",
-        "description": "Handle project disputes"
-      },
-      {
-        "name": "disputeResolutionPeriod",
-        "label": "Dispute Resolution Period (Days)",
-        "type": "number",
-        "description": "Time limit for dispute resolution"
+        "section": "refund",
+        "dependsOn": "refundPolicyType",
+        "showWhen": ["standard", "extended"],
+        "description": "Automatically approve refund requests within the refund window"
       }
     ]
   }

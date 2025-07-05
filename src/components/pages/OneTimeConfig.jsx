@@ -34,11 +34,26 @@ const OneTimeConfig = () => {
     loadConfig()
   }, [])
 
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }))
+const handleInputChange = (field, value) => {
+    setFormData(prev => {
+      const newData = {
+        ...prev,
+        [field]: value
+      }
+      
+      // Handle policy text pre-filling
+      if (field === 'refundPolicyType' && value) {
+        const policyField = configData.fields.find(f => f.name === 'refundPolicyText')
+        if (policyField && policyField.options) {
+          const selectedOption = policyField.options.find(opt => opt.value === value)
+          if (selectedOption && selectedOption.policyText) {
+            newData.refundPolicyText = selectedOption.policyText
+          }
+        }
+      }
+      
+      return newData
+    })
   }
 
   const handleSave = async () => {
@@ -107,57 +122,251 @@ const OneTimeConfig = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Card className="p-6 mb-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {configData.fields.map((field, index) => (
-                <motion.div
-                  key={field.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className={field.type === 'textarea' ? 'md:col-span-2' : ''}
-                >
-                  {field.type === 'checkbox' ? (
-                    <div className="flex items-center space-x-3">
-                      <input
-                        type="checkbox"
-                        id={field.name}
-                        checked={formData[field.name] || false}
-                        onChange={(e) => handleInputChange(field.name, e.target.checked)}
-                        className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
-                      />
-                      <div>
-                        <label htmlFor={field.name} className="text-sm font-medium text-gray-700">
-                          {field.label}
-                        </label>
-                        {field.description && (
+<Card className="p-6 mb-6">
+            <div className="space-y-8">
+              {/* Delivery Method Section */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Delivery Method</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {configData.fields.filter(field => field.section === 'delivery').map((field, index) => {
+                    const isVisible = !field.dependsOn || formData[field.dependsOn]
+                    if (!isVisible) return null
+                    
+                    return (
+                      <motion.div
+                        key={field.name}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className={field.type === 'textarea' ? 'md:col-span-2' : ''}
+                      >
+                        {field.type === 'checkbox' ? (
+                          <div className="flex items-center space-x-3">
+                            <input
+                              type="checkbox"
+                              id={field.name}
+                              checked={formData[field.name] || false}
+                              onChange={(e) => handleInputChange(field.name, e.target.checked)}
+                              className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+                            />
+                            <div>
+                              <label htmlFor={field.name} className="text-sm font-medium text-gray-700">
+                                {field.label}
+                              </label>
+                              {field.description && (
+                                <p className="text-xs text-gray-500 mt-1">{field.description}</p>
+                              )}
+                            </div>
+                          </div>
+                        ) : field.type === 'select' ? (
+                          <FormField
+                            type="select"
+                            label={field.label}
+                            value={formData[field.name] || ''}
+                            onChange={(e) => handleInputChange(field.name, e.target.value)}
+                            options={field.options}
+                            className="w-full"
+                          />
+                        ) : (
+                          <FormField
+                            type={field.type}
+                            label={field.label}
+                            value={formData[field.name] || ''}
+                            onChange={(e) => handleInputChange(field.name, field.type === 'number' ? parseInt(e.target.value) || 0 : e.target.value)}
+                            className="w-full"
+                          />
+                        )}
+                        {field.description && field.type !== 'checkbox' && (
                           <p className="text-xs text-gray-500 mt-1">{field.description}</p>
                         )}
-                      </div>
-                    </div>
-                  ) : field.type === 'select' ? (
-                    <FormField
-                      type="select"
-                      label={field.label}
-                      value={formData[field.name] || ''}
-                      onChange={(e) => handleInputChange(field.name, e.target.value)}
-                      options={field.options}
-                      className="w-full"
-                    />
-                  ) : (
-                    <FormField
-                      type={field.type}
-                      label={field.label}
-                      value={formData[field.name] || ''}
-                      onChange={(e) => handleInputChange(field.name, field.type === 'number' ? parseInt(e.target.value) || 0 : e.target.value)}
-                      className="w-full"
-                    />
-                  )}
-                  {field.description && field.type !== 'checkbox' && (
-                    <p className="text-xs text-gray-500 mt-1">{field.description}</p>
-                  )}
-                </motion.div>
-              ))}
+                      </motion.div>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Licensing Options Section */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Licensing Options</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {configData.fields.filter(field => field.section === 'licensing').map((field, index) => {
+                    const isVisible = !field.dependsOn || formData[field.dependsOn]
+                    if (!isVisible) return null
+                    
+                    return (
+                      <motion.div
+                        key={field.name}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className={field.type === 'textarea' ? 'md:col-span-2' : ''}
+                      >
+                        {field.type === 'checkbox' ? (
+                          <div className="flex items-center space-x-3">
+                            <input
+                              type="checkbox"
+                              id={field.name}
+                              checked={formData[field.name] || false}
+                              onChange={(e) => handleInputChange(field.name, e.target.checked)}
+                              className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+                            />
+                            <div>
+                              <label htmlFor={field.name} className="text-sm font-medium text-gray-700">
+                                {field.label}
+                              </label>
+                              {field.description && (
+                                <p className="text-xs text-gray-500 mt-1">{field.description}</p>
+                              )}
+                            </div>
+                          </div>
+                        ) : field.type === 'select' ? (
+                          <FormField
+                            type="select"
+                            label={field.label}
+                            value={formData[field.name] || ''}
+                            onChange={(e) => handleInputChange(field.name, e.target.value)}
+                            options={field.options}
+                            className="w-full"
+                          />
+                        ) : (
+                          <FormField
+                            type={field.type}
+                            label={field.label}
+                            value={formData[field.name] || ''}
+                            onChange={(e) => handleInputChange(field.name, field.type === 'number' ? parseInt(e.target.value) || 0 : e.target.value)}
+                            className="w-full"
+                          />
+                        )}
+                        {field.description && field.type !== 'checkbox' && (
+                          <p className="text-xs text-gray-500 mt-1">{field.description}</p>
+                        )}
+                      </motion.div>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Payment Settings Section */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Settings</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {configData.fields.filter(field => field.section === 'payment').map((field, index) => {
+                    const isVisible = !field.dependsOn || formData[field.dependsOn]
+                    if (!isVisible) return null
+                    
+                    return (
+                      <motion.div
+                        key={field.name}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className={field.type === 'textarea' ? 'md:col-span-2' : ''}
+                      >
+                        {field.type === 'checkbox' ? (
+                          <div className="flex items-center space-x-3">
+                            <input
+                              type="checkbox"
+                              id={field.name}
+                              checked={formData[field.name] || false}
+                              onChange={(e) => handleInputChange(field.name, e.target.checked)}
+                              className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+                            />
+                            <div>
+                              <label htmlFor={field.name} className="text-sm font-medium text-gray-700">
+                                {field.label}
+                              </label>
+                              {field.description && (
+                                <p className="text-xs text-gray-500 mt-1">{field.description}</p>
+                              )}
+                            </div>
+                          </div>
+                        ) : field.type === 'select' ? (
+                          <FormField
+                            type="select"
+                            label={field.label}
+                            value={formData[field.name] || ''}
+                            onChange={(e) => handleInputChange(field.name, e.target.value)}
+                            options={field.options}
+                            className="w-full"
+                          />
+                        ) : (
+                          <FormField
+                            type={field.type}
+                            label={field.label}
+                            value={formData[field.name] || ''}
+                            onChange={(e) => handleInputChange(field.name, field.type === 'number' ? parseInt(e.target.value) || 0 : e.target.value)}
+                            className="w-full"
+                          />
+                        )}
+                        {field.description && field.type !== 'checkbox' && (
+                          <p className="text-xs text-gray-500 mt-1">{field.description}</p>
+                        )}
+                      </motion.div>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Refund Policy Section */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Refund Policy</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {configData.fields.filter(field => field.section === 'refund').map((field, index) => {
+                    const isVisible = !field.dependsOn || formData[field.dependsOn]
+                    if (!isVisible) return null
+                    
+                    return (
+                      <motion.div
+                        key={field.name}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className={field.type === 'textarea' ? 'md:col-span-2' : ''}
+                      >
+                        {field.type === 'checkbox' ? (
+                          <div className="flex items-center space-x-3">
+                            <input
+                              type="checkbox"
+                              id={field.name}
+                              checked={formData[field.name] || false}
+                              onChange={(e) => handleInputChange(field.name, e.target.checked)}
+                              className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+                            />
+                            <div>
+                              <label htmlFor={field.name} className="text-sm font-medium text-gray-700">
+                                {field.label}
+                              </label>
+                              {field.description && (
+                                <p className="text-xs text-gray-500 mt-1">{field.description}</p>
+                              )}
+                            </div>
+                          </div>
+                        ) : field.type === 'select' ? (
+                          <FormField
+                            type="select"
+                            label={field.label}
+                            value={formData[field.name] || ''}
+                            onChange={(e) => handleInputChange(field.name, e.target.value)}
+                            options={field.options}
+                            className="w-full"
+                          />
+                        ) : (
+                          <FormField
+                            type={field.type}
+                            label={field.label}
+                            value={formData[field.name] || ''}
+                            onChange={(e) => handleInputChange(field.name, field.type === 'number' ? parseInt(e.target.value) || 0 : e.target.value)}
+                            className="w-full"
+                          />
+                        )}
+                        {field.description && field.type !== 'checkbox' && (
+                          <p className="text-xs text-gray-500 mt-1">{field.description}</p>
+                        )}
+                      </motion.div>
+                    )
+                  })}
+                </div>
+              </div>
             </div>
           </Card>
 
