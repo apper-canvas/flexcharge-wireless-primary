@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Card from '@/components/atoms/Card'
@@ -34,12 +34,35 @@ const OneTimeConfig = () => {
     loadConfig()
   }, [])
 
-  const handleInputChange = (field, value) => {
+const handleInputChange = (field, value) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }))
   }
+
+  // Filter fields based on delivery method selection
+  const visibleFields = useMemo(() => {
+    if (!configData?.fields) return []
+    
+    const deliveryMethod = formData.deliveryMethod
+    
+    return configData.fields.filter(field => {
+      // Always show delivery method field
+      if (field.name === 'deliveryMethod') return true
+      
+      // Show conditional fields based on delivery method
+      if (deliveryMethod === 'instant-download') {
+        return ['downloadLimit', 'linkExpiration', 'ipRestriction'].includes(field.name)
+      } else if (deliveryMethod === 'email-delivery') {
+        return ['emailTemplate', 'attachmentSizeLimit'].includes(field.name)
+      } else if (deliveryMethod === 'account-based') {
+        return ['accessDuration', 'deviceLimit'].includes(field.name)
+      }
+      
+      return false
+    })
+  }, [configData?.fields, formData.deliveryMethod])
 
   const handleSave = async () => {
     setSaving(true)
@@ -107,9 +130,9 @@ const OneTimeConfig = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Card className="p-6 mb-6">
+<Card className="p-6 mb-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {configData.fields.map((field, index) => (
+              {visibleFields.map((field, index) => (
                 <motion.div
                   key={field.name}
                   initial={{ opacity: 0, y: 20 }}
