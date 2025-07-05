@@ -116,6 +116,10 @@
       "deviceLimit": 2,
       "taxIncluded": false,
       "description": ""
+    },
+    "fields": [
+      {
+        "name": "downloadLimit",
         "label": "Download Limit",
         "type": "number",
         "description": "Maximum number of downloads allowed per purchase (0 = unlimited)"
