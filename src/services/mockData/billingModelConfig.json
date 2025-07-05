@@ -4,7 +4,24 @@
     "modelType": "one-time",
     "title": "One-Time Purchase Configuration",
     "description": "Configure settings for one-time purchase billing",
-    "defaultSettings": {
+"defaultSettings": {
+      "deliveryMethod": "instant_download",
+      "downloadLimit": 3,
+      "linkExpiration": 7,
+      "ipRestriction": false,
+      "emailTemplate": "default",
+      "attachmentSizeLimit": 100,
+      "accessDuration": 365,
+      "deviceLimit": 0,
+      "licenseType": "single_user",
+      "generateLicenseKeys": false,
+      "activationRequired": false,
+      "acceptPreorders": false,
+      "chargeTiming": "immediate",
+      "partialPayments": false,
+      "minimumDeposit": 0,
+      "refundPolicyType": "standard",
+      "policyText": "Standard refund policy applies to all purchases.",
       "enableInstantDownload": true,
       "requireEmailVerification": false,
       "allowGuestCheckout": true,
@@ -16,7 +33,141 @@
       "refundPeriod": 30,
       "paymentMethods": ["credit_card", "paypal", "bank_transfer"]
     },
-    "fields": [
+"fields": [
+      {
+        "name": "deliveryMethod",
+        "label": "Delivery Method",
+        "type": "select",
+        "options": [
+          { "value": "instant_download", "label": "Instant Download" },
+          { "value": "email_delivery", "label": "Email Delivery" },
+          { "value": "account_access", "label": "Account-Based Access" },
+          { "value": "api_webhook", "label": "API/Webhook" },
+          { "value": "no_delivery", "label": "No Delivery" }
+        ],
+        "description": "How customers receive their purchased products"
+      },
+      {
+        "name": "downloadLimit",
+        "label": "Download Limit",
+        "type": "number",
+        "description": "Maximum number of downloads allowed per purchase (0 = unlimited)"
+      },
+      {
+        "name": "linkExpiration",
+        "label": "Link Expiration (Days)",
+        "type": "number",
+        "description": "Number of days before download links expire"
+      },
+      {
+        "name": "ipRestriction",
+        "label": "IP Restriction",
+        "type": "checkbox",
+        "description": "Restrict downloads to the IP address used during purchase"
+      },
+      {
+        "name": "emailTemplate",
+        "label": "Email Template",
+        "type": "select",
+        "options": [
+          { "value": "default", "label": "Default Template" },
+          { "value": "professional", "label": "Professional Template" },
+          { "value": "minimal", "label": "Minimal Template" },
+          { "value": "custom", "label": "Custom Template" }
+        ],
+        "description": "Email template for delivery notifications"
+      },
+      {
+        "name": "attachmentSizeLimit",
+        "label": "Attachment Size Limit (MB)",
+        "type": "number",
+        "description": "Maximum file size for email attachments"
+      },
+      {
+        "name": "accessDuration",
+        "label": "Access Duration (Days)",
+        "type": "number",
+        "description": "How long customers have access to account-based products (0 = lifetime)"
+      },
+      {
+        "name": "deviceLimit",
+        "label": "Device Limit",
+        "type": "number",
+        "description": "Maximum number of devices that can access the product (0 = unlimited)"
+      },
+      {
+        "name": "licenseType",
+        "label": "License Type",
+        "type": "select",
+        "options": [
+          { "value": "single_user", "label": "Single User" },
+          { "value": "multi_user", "label": "Multi User" },
+          { "value": "commercial", "label": "Commercial" },
+          { "value": "extended", "label": "Extended" },
+          { "value": "enterprise", "label": "Enterprise" }
+        ],
+        "description": "Type of license granted with purchase"
+      },
+      {
+        "name": "generateLicenseKeys",
+        "label": "Generate License Keys",
+        "type": "checkbox",
+        "description": "Automatically generate unique license keys for each purchase"
+      },
+      {
+        "name": "activationRequired",
+        "label": "Activation Required",
+        "type": "checkbox",
+        "description": "Require customers to activate their license before use"
+      },
+      {
+        "name": "acceptPreorders",
+        "label": "Accept Pre-orders",
+        "type": "checkbox",
+        "description": "Allow customers to purchase before product is available"
+      },
+      {
+        "name": "chargeTiming",
+        "label": "Charge Timing",
+        "type": "select",
+        "options": [
+          { "value": "immediate", "label": "Immediate" },
+          { "value": "on_delivery", "label": "On Delivery" },
+          { "value": "on_activation", "label": "On Activation" },
+          { "value": "scheduled", "label": "Scheduled" }
+        ],
+        "description": "When to charge customers for their purchase"
+      },
+      {
+        "name": "partialPayments",
+        "label": "Partial Payments",
+        "type": "checkbox",
+        "description": "Allow customers to pay in installments"
+      },
+      {
+        "name": "minimumDeposit",
+        "label": "Minimum Deposit (%)",
+        "type": "number",
+        "description": "Minimum deposit required for partial payments (0-100)"
+      },
+      {
+        "name": "refundPolicyType",
+        "label": "Refund Policy Type",
+        "type": "select",
+        "options": [
+          { "value": "standard", "label": "Standard Policy" },
+          { "value": "no_refund", "label": "No Refunds" },
+          { "value": "conditional", "label": "Conditional Refunds" },
+          { "value": "custom", "label": "Custom Policy" }
+        ],
+        "description": "Type of refund policy to apply"
+      },
+      {
+        "name": "policyText",
+        "label": "Policy Text",
+        "type": "textarea",
+        "description": "Detailed refund policy text displayed to customers"
+      },
       {
         "name": "enableInstantDownload",
         "label": "Enable Instant Download",
