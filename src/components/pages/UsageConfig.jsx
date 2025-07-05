@@ -238,70 +238,6 @@ const UsageConfig = () => {
             )}
           </Card>
 
-          {/* Additional Configuration */}
-          <Card className="p-6 mb-6">
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="p-2 bg-secondary/10 rounded-lg">
-                <ApperIcon name="Settings" size={20} className="text-secondary" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Billing Configuration</h3>
-                <p className="text-sm text-gray-600">Set up pricing and billing parameters</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {configData.fields.filter(field => !['meterName', 'meterCode', 'unitOfMeasure', 'customUnitName'].includes(field.name)).map((field, index) => (
-                <motion.div
-                  key={field.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className={field.type === 'textarea' ? 'md:col-span-2' : ''}
-                >
-                  {field.type === 'checkbox' ? (
-                    <div className="flex items-center space-x-3">
-                      <input
-                        type="checkbox"
-                        id={field.name}
-                        checked={formData[field.name] || false}
-                        onChange={(e) => handleInputChange(field.name, e.target.checked)}
-                        className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
-                      />
-                      <div>
-                        <label htmlFor={field.name} className="text-sm font-medium text-gray-700">
-                          {field.label}
-                        </label>
-                        {field.description && (
-                          <p className="text-xs text-gray-500 mt-1">{field.description}</p>
-                        )}
-                      </div>
-                    </div>
-                  ) : field.type === 'select' ? (
-                    <FormField
-                      type="select"
-                      label={field.label}
-                      value={formData[field.name] || ''}
-                      onChange={(e) => handleInputChange(field.name, e.target.value)}
-                      options={field.options}
-                      className="w-full"
-                    />
-                  ) : (
-                    <FormField
-                      type={field.type}
-                      label={field.label}
-                      value={formData[field.name] || ''}
-                      onChange={(e) => handleInputChange(field.name, field.type === 'number' ? parseInt(e.target.value) || 0 : e.target.value)}
-                      className="w-full"
-                    />
-                  )}
-                  {field.description && field.type !== 'checkbox' && (
-                    <p className="text-xs text-gray-500 mt-1">{field.description}</p>
-                  )}
-                </motion.div>
-              ))}
-            </div>
-</Card>
 
           {/* Aggregation Configuration */}
           <Card className="p-6 mb-6">
@@ -404,6 +340,412 @@ const UsageConfig = () => {
                 )}
               </motion.div>
             )}
+</Card>
+
+          {/* Pricing Model Section */}
+          <Card className="p-6 mb-6">
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="p-2 bg-secondary/10 rounded-lg">
+                <ApperIcon name="DollarSign" size={20} className="text-secondary" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Pricing Model</h3>
+                <p className="text-sm text-gray-600">Configure your pricing structure and billing tiers</p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 gap-6">
+              {/* Model Type Selection */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+              >
+                <FormField
+                  type="select"
+                  label="Model Type"
+                  value={formData.pricingModelType || ''}
+                  onChange={(e) => handleInputChange('pricingModelType', e.target.value)}
+                  options={[
+                    { value: 'simple', label: 'Simple per-unit - Fixed price per unit' },
+                    { value: 'tiered', label: 'Tiered pricing - Different rates for usage tiers' },
+                    { value: 'volume', label: 'Volume pricing - Discount based on total volume' },
+                    { value: 'package', label: 'Package pricing - Bundled usage packages' }
+                  ]}
+                  className="w-full"
+                />
+                <p className="text-xs text-gray-500 mt-1">Choose how usage will be priced and billed</p>
+              </motion.div>
+
+              {/* Simple Pricing */}
+              {formData.pricingModelType === 'simple' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-gray-50 rounded-lg"
+                >
+                  <FormField
+                    type="number"
+                    label="Price per Unit ($)"
+                    value={formData.unitPrice || ''}
+                    onChange={(e) => handleInputChange('unitPrice', parseFloat(e.target.value) || 0)}
+                    className="w-full"
+                    placeholder="0.01"
+                  />
+                  <FormField
+                    type="number"
+                    label="Free Tier Limit"
+                    value={formData.freeTierLimit || ''}
+                    onChange={(e) => handleInputChange('freeTierLimit', parseInt(e.target.value) || 0)}
+                    className="w-full"
+                    placeholder="1000"
+                  />
+                </motion.div>
+              )}
+
+              {/* Tiered Pricing Table */}
+              {(formData.pricingModelType === 'tiered' || formData.pricingModelType === 'package') && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="p-4 bg-gray-50 rounded-lg"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-sm font-medium text-gray-900">
+                      {formData.pricingModelType === 'package' ? 'Package Tiers' : 'Pricing Tiers'}
+                    </h4>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const newTier = {
+                          id: Date.now(),
+                          name: `Tier ${(formData.pricingTiers || []).length + 1}`,
+                          from: 0,
+                          to: null,
+                          price: 0
+                        }
+                        handleInputChange('pricingTiers', [...(formData.pricingTiers || []), newTier])
+                      }}
+                      icon="Plus"
+                    >
+                      Add Tier
+                    </Button>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    {(formData.pricingTiers || []).map((tier, index) => (
+                      <div key={tier.id} className="grid grid-cols-1 md:grid-cols-5 gap-3 p-3 bg-white rounded border items-end">
+                        <FormField
+                          type="text"
+                          label="Tier Name"
+                          value={tier.name}
+                          onChange={(e) => {
+                            const updatedTiers = [...(formData.pricingTiers || [])]
+                            updatedTiers[index] = { ...tier, name: e.target.value }
+                            handleInputChange('pricingTiers', updatedTiers)
+                          }}
+                          className="w-full"
+                        />
+                        <FormField
+                          type="number"
+                          label="From"
+                          value={tier.from}
+                          onChange={(e) => {
+                            const updatedTiers = [...(formData.pricingTiers || [])]
+                            updatedTiers[index] = { ...tier, from: parseInt(e.target.value) || 0 }
+                            handleInputChange('pricingTiers', updatedTiers)
+                          }}
+                          className="w-full"
+                        />
+                        <FormField
+                          type="number"
+                          label="To"
+                          value={tier.to || ''}
+                          onChange={(e) => {
+                            const updatedTiers = [...(formData.pricingTiers || [])]
+                            updatedTiers[index] = { ...tier, to: e.target.value ? parseInt(e.target.value) : null }
+                            handleInputChange('pricingTiers', updatedTiers)
+                          }}
+                          className="w-full"
+                          placeholder="Unlimited"
+                        />
+                        <FormField
+                          type="number"
+                          label="Price ($)"
+                          value={tier.price}
+                          onChange={(e) => {
+                            const updatedTiers = [...(formData.pricingTiers || [])]
+                            updatedTiers[index] = { ...tier, price: parseFloat(e.target.value) || 0 }
+                            handleInputChange('pricingTiers', updatedTiers)
+                          }}
+                          className="w-full"
+                        />
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const updatedTiers = formData.pricingTiers.filter((_, i) => i !== index)
+                            handleInputChange('pricingTiers', updatedTiers)
+                          }}
+                          icon="Trash2"
+                          className="text-red-600 hover:text-red-700"
+                        />
+                      </div>
+                    ))}
+                    
+                    {(!formData.pricingTiers || formData.pricingTiers.length === 0) && (
+                      <div className="text-center py-6 text-gray-500">
+                        <ApperIcon name="Package" size={32} className="mx-auto mb-2 opacity-50" />
+                        <p className="text-sm">No tiers configured yet. Click "Add Tier" to get started.</p>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Volume Pricing */}
+              {formData.pricingModelType === 'volume' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 bg-gray-50 rounded-lg"
+                >
+                  <FormField
+                    type="number"
+                    label="Base Price per Unit ($)"
+                    value={formData.baseUnitPrice || ''}
+                    onChange={(e) => handleInputChange('baseUnitPrice', parseFloat(e.target.value) || 0)}
+                    className="w-full"
+                    placeholder="0.01"
+                  />
+                  <FormField
+                    type="number"
+                    label="Volume Discount (%)"
+                    value={formData.volumeDiscount || ''}
+                    onChange={(e) => handleInputChange('volumeDiscount', parseFloat(e.target.value) || 0)}
+                    className="w-full"
+                    placeholder="10"
+                  />
+                  <FormField
+                    type="number"
+                    label="Volume Threshold"
+                    value={formData.volumeThreshold || ''}
+                    onChange={(e) => handleInputChange('volumeThreshold', parseInt(e.target.value) || 0)}
+                    className="w-full"
+                    placeholder="10000"
+                  />
+                </motion.div>
+              )}
+            </div>
+          </Card>
+
+          {/* Usage Controls Section */}
+          <Card className="p-6 mb-6">
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="p-2 bg-red-100 rounded-lg">
+                <ApperIcon name="Shield" size={20} className="text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Usage Controls</h3>
+                <p className="text-sm text-gray-600">Set up limits, alerts, and budget controls for usage management</p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 gap-6">
+              {/* Hard Limits */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="p-4 border border-red-200 rounded-lg"
+              >
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="p-2 bg-red-100 rounded-lg">
+                    <ApperIcon name="StopCircle" size={16} className="text-red-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-gray-900">Hard Limits</h4>
+                    <p className="text-xs text-gray-600">Strict limits that stop usage when reached</p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="checkbox"
+                      id="enableHardLimits"
+                      checked={formData.enableHardLimits || false}
+                      onChange={(e) => handleInputChange('enableHardLimits', e.target.checked)}
+                      className="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 focus:ring-2"
+                    />
+                    <label htmlFor="enableHardLimits" className="text-sm font-medium text-gray-700">
+                      Enable Hard Limits
+                    </label>
+                  </div>
+                  
+                  {formData.enableHardLimits && (
+                    <>
+                      <FormField
+                        type="number"
+                        label="Usage Limit"
+                        value={formData.hardUsageLimit || ''}
+                        onChange={(e) => handleInputChange('hardUsageLimit', parseInt(e.target.value) || 0)}
+                        className="w-full"
+                        placeholder="100000"
+                      />
+                      <FormField
+                        type="number"
+                        label="Spending Limit ($)"
+                        value={formData.hardSpendingLimit || ''}
+                        onChange={(e) => handleInputChange('hardSpendingLimit', parseFloat(e.target.value) || 0)}
+                        className="w-full"
+                        placeholder="1000"
+                      />
+                    </>
+                  )}
+                </div>
+              </motion.div>
+
+              {/* Soft Alerts */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="p-4 border border-yellow-200 rounded-lg"
+              >
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="p-2 bg-yellow-100 rounded-lg">
+                    <ApperIcon name="AlertTriangle" size={16} className="text-yellow-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-gray-900">Soft Alerts</h4>
+                    <p className="text-xs text-gray-600">Warning notifications when approaching limits</p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="checkbox"
+                      id="enableSoftAlerts"
+                      checked={formData.enableSoftAlerts || false}
+                      onChange={(e) => handleInputChange('enableSoftAlerts', e.target.checked)}
+                      className="w-4 h-4 text-yellow-600 bg-gray-100 border-gray-300 rounded focus:ring-yellow-500 focus:ring-2"
+                    />
+                    <label htmlFor="enableSoftAlerts" className="text-sm font-medium text-gray-700">
+                      Enable Soft Alerts
+                    </label>
+                  </div>
+                  
+                  {formData.enableSoftAlerts && (
+                    <>
+                      <FormField
+                        type="number"
+                        label="Alert at % of Limit"
+                        value={formData.alertThresholdPercent || ''}
+                        onChange={(e) => handleInputChange('alertThresholdPercent', parseInt(e.target.value) || 0)}
+                        className="w-full"
+                        placeholder="80"
+                      />
+                      <FormField
+                        type="select"
+                        label="Alert Method"
+                        value={formData.alertMethod || ''}
+                        onChange={(e) => handleInputChange('alertMethod', e.target.value)}
+                        options={[
+                          { value: 'email', label: 'Email' },
+                          { value: 'webhook', label: 'Webhook' },
+                          { value: 'both', label: 'Email + Webhook' }
+                        ]}
+                        className="w-full"
+                      />
+                      <FormField
+                        type="select"
+                        label="Alert Frequency"
+                        value={formData.alertFrequency || ''}
+                        onChange={(e) => handleInputChange('alertFrequency', e.target.value)}
+                        options={[
+                          { value: 'once', label: 'Once' },
+                          { value: 'daily', label: 'Daily' },
+                          { value: 'weekly', label: 'Weekly' }
+                        ]}
+                        className="w-full"
+                      />
+                    </>
+                  )}
+                </div>
+              </motion.div>
+
+              {/* Budget Caps */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="p-4 border border-blue-200 rounded-lg"
+              >
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <ApperIcon name="CreditCard" size={16} className="text-blue-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-gray-900">Budget Caps</h4>
+                    <p className="text-xs text-gray-600">Monthly and daily spending limits with automatic controls</p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="checkbox"
+                      id="enableBudgetCaps"
+                      checked={formData.enableBudgetCaps || false}
+                      onChange={(e) => handleInputChange('enableBudgetCaps', e.target.checked)}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                    />
+                    <label htmlFor="enableBudgetCaps" className="text-sm font-medium text-gray-700">
+                      Enable Budget Caps
+                    </label>
+                  </div>
+                  
+                  {formData.enableBudgetCaps && (
+                    <>
+                      <FormField
+                        type="number"
+                        label="Monthly Budget ($)"
+                        value={formData.monthlyBudget || ''}
+                        onChange={(e) => handleInputChange('monthlyBudget', parseFloat(e.target.value) || 0)}
+                        className="w-full"
+                        placeholder="5000"
+                      />
+                      <FormField
+                        type="number"
+                        label="Daily Budget ($)"
+                        value={formData.dailyBudget || ''}
+                        onChange={(e) => handleInputChange('dailyBudget', parseFloat(e.target.value) || 0)}
+                        className="w-full"
+                        placeholder="200"
+                      />
+                      <FormField
+                        type="select"
+                        label="Action at Cap"
+                        value={formData.budgetCapAction || ''}
+                        onChange={(e) => handleInputChange('budgetCapAction', e.target.value)}
+                        options={[
+                          { value: 'block', label: 'Block Usage' },
+                          { value: 'notify', label: 'Notify Only' },
+                          { value: 'approve', label: 'Require Approval' }
+                        ]}
+                        className="w-full"
+                      />
+                    </>
+                  )}
+                </div>
+              </motion.div>
+            </div>
           </Card>
 
           <Card className="p-6">
