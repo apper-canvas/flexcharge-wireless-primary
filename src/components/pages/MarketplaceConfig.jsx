@@ -187,15 +187,18 @@ const MarketplaceConfig = () => {
             <div className="flex items-center mb-6">
               <ApperIcon name="Percent" className="w-5 h-5 text-primary mr-2" />
               <h2 className="text-xl font-semibold text-gray-900">Commission Structure</h2>
-            </div>
+</div>
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   type="number"
                   label="Base Commission Rate (%)"
                   value={formData.baseCommissionRate}
-                  onChange={(e) => handleInputChange('baseCommissionRate', parseFloat(e.target.value) || 0)}
-                  step="0.1"
+                  onChange={(e) => handleInputChange('baseCommissionRate', Math.max(0, Math.min(100, parseFloat(e.target.value) || 0)))}
+                  step="0.01"
+                  min="0"
+                  max="100"
+                  placeholder="0.00"
                   className="w-full"
                 />
                 <FormField
@@ -204,10 +207,11 @@ const MarketplaceConfig = () => {
                   value={formData.commissionType}
                   onChange={(e) => handleInputChange('commissionType', e.target.value)}
                   options={[
-                    { value: 'category', label: 'Category-based' },
-                    { value: 'vendor_tier', label: 'Vendor tier-based' }
+                    { value: 'category', label: 'Category-based Commission' },
+                    { value: 'vendor_tier', label: 'Vendor Tier-based Commission' }
                   ]}
                   className="w-full"
+                  required
                 />
               </div>
 
@@ -319,29 +323,37 @@ const MarketplaceConfig = () => {
               <ApperIcon name="DollarSign" className="w-5 h-5 text-primary mr-2" />
               <h2 className="text-xl font-semibold text-gray-900">Additional Fees</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <FormField
                 type="number"
                 label="Listing Fee ($)"
                 value={formData.listingFee}
-                onChange={(e) => handleInputChange('listingFee', parseFloat(e.target.value) || 0)}
+                onChange={(e) => handleInputChange('listingFee', Math.max(0, parseFloat(e.target.value) || 0))}
                 step="0.01"
+                min="0"
+                placeholder="0.00"
                 className="w-full"
               />
               <FormField
                 type="number"
                 label="Transaction Fee (%)"
                 value={formData.transactionFee}
-                onChange={(e) => handleInputChange('transactionFee', parseFloat(e.target.value) || 0)}
-                step="0.1"
+                onChange={(e) => handleInputChange('transactionFee', Math.max(0, Math.min(100, parseFloat(e.target.value) || 0)))}
+                step="0.01"
+                min="0"
+                max="100"
+                placeholder="0.00"
                 className="w-full"
               />
               <FormField
                 type="number"
                 label="Payment Processing Fee (%)"
                 value={formData.paymentProcessingFee}
-                onChange={(e) => handleInputChange('paymentProcessingFee', parseFloat(e.target.value) || 0)}
-                step="0.1"
+                onChange={(e) => handleInputChange('paymentProcessingFee', Math.max(0, Math.min(100, parseFloat(e.target.value) || 0)))}
+                step="0.01"
+                min="0"
+                max="100"
+                placeholder="0.00"
                 className="w-full"
               />
             </div>
@@ -391,47 +403,49 @@ const MarketplaceConfig = () => {
               <ApperIcon name="UserCheck" className="w-5 h-5 text-primary mr-2" />
               <h2 className="text-xl font-semibold text-gray-900">Vendor Requirements</h2>
             </div>
-            <div className="space-y-6">
-              <div className="flex items-center space-x-3">
+<div className="space-y-4">
+              <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                 <input
                   type="checkbox"
                   id="kycRequired"
                   checked={formData.kycRequired}
                   onChange={(e) => handleInputChange('kycRequired', e.target.checked)}
-                  className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+                  className="w-4 h-4 text-primary bg-white border-gray-300 rounded focus:ring-primary focus:ring-2 mt-0.5"
                 />
-                <div>
-                  <label htmlFor="kycRequired" className="text-sm font-medium text-gray-700">
+                <div className="flex-1">
+                  <label htmlFor="kycRequired" className="text-sm font-medium text-gray-700 cursor-pointer">
                     KYC Required
                   </label>
                   <p className="text-xs text-gray-500 mt-1">Require Know Your Customer verification for all vendors</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-3">
+              
+              <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                 <input
                   type="checkbox"
                   id="businessVendorsAllowed"
                   checked={formData.businessVendorsAllowed}
                   onChange={(e) => handleInputChange('businessVendorsAllowed', e.target.checked)}
-                  className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+                  className="w-4 h-4 text-primary bg-white border-gray-300 rounded focus:ring-primary focus:ring-2 mt-0.5"
                 />
-                <div>
-                  <label htmlFor="businessVendorsAllowed" className="text-sm font-medium text-gray-700">
+                <div className="flex-1">
+                  <label htmlFor="businessVendorsAllowed" className="text-sm font-medium text-gray-700 cursor-pointer">
                     Business Vendors Allowed
                   </label>
                   <p className="text-xs text-gray-500 mt-1">Allow business entities to register as vendors</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-3">
+              
+              <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                 <input
                   type="checkbox"
                   id="internationalVendors"
                   checked={formData.internationalVendors}
                   onChange={(e) => handleInputChange('internationalVendors', e.target.checked)}
-                  className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+                  className="w-4 h-4 text-primary bg-white border-gray-300 rounded focus:ring-primary focus:ring-2 mt-0.5"
                 />
-                <div>
-                  <label htmlFor="internationalVendors" className="text-sm font-medium text-gray-700">
+                <div className="flex-1">
+                  <label htmlFor="internationalVendors" className="text-sm font-medium text-gray-700 cursor-pointer">
                     International Vendors
                   </label>
                   <p className="text-xs text-gray-500 mt-1">Allow vendors from international markets</p>
@@ -440,19 +454,21 @@ const MarketplaceConfig = () => {
             </div>
           </Card>
 
-          <Card className="p-6">
-            <div className="flex items-center justify-between">
+<Card className="p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">Configuration Summary</h3>
-                <p className="text-sm text-gray-600">
-                  Review your settings and save to continue
+                <p className="text-sm text-gray-600 mt-1">
+                  Review your marketplace settings and save to continue
                 </p>
               </div>
-              <div className="flex space-x-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <Button
                   variant="outline"
                   onClick={handleBack}
                   icon="ArrowLeft"
+                  className="order-2 sm:order-1"
+                  disabled={saving}
                 >
                   Back
                 </Button>
@@ -460,9 +476,10 @@ const MarketplaceConfig = () => {
                   variant="primary"
                   onClick={handleSave}
                   loading={saving}
-                  icon="Save"
+                  icon={saving ? "Loader2" : "Save"}
+                  className="order-1 sm:order-2"
                 >
-                  Save & Continue
+                  {saving ? 'Saving...' : 'Save & Continue'}
                 </Button>
               </div>
             </div>
