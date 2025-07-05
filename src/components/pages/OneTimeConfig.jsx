@@ -1,13 +1,16 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import Card from '@/components/atoms/Card'
-import Button from '@/components/atoms/Button'
-import Logo from '@/components/atoms/Logo'
-import FormField from '@/components/molecules/FormField'
-import ApperIcon from '@/components/ApperIcon'
-import { toast } from 'react-toastify'
-import billingModelConfigService from '@/services/api/billingModelConfigService'
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import Select from "@/components/atoms/Select";
+import Button from "@/components/atoms/Button";
+import Logo from "@/components/atoms/Logo";
+import Card from "@/components/atoms/Card";
+import Loading from "@/components/ui/Loading";
+import Settings from "@/components/pages/Settings";
+import FormField from "@/components/molecules/FormField";
+import billingModelConfigService, { getConfigByType, saveConfig } from "@/services/api/billingModelConfigService";
 
 const OneTimeConfig = () => {
   const navigate = useNavigate()
@@ -363,71 +366,72 @@ const handleInputChange = (field, value) => {
                         />
                       </div>
                     </div>
+</div>
                   )}
                 </div>
               )}
-
               {/* Licensing Options Section */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Licensing Options</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {configData.fields.filter(field => field.section === 'licensing').map((field, index) => {
-                    const isVisible = !field.dependsOn || formData[field.dependsOn]
-                    if (!isVisible) return null
-                    
-                    return (
-                      <motion.div
-                        key={field.name}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className={field.type === 'textarea' ? 'md:col-span-2' : ''}
-                      >
-                        {field.type === 'checkbox' ? (
-                          <div className="flex items-center space-x-3">
-                            <input
-                              type="checkbox"
-                              id={field.name}
-                              checked={formData[field.name] || false}
-                              onChange={(e) => handleInputChange(field.name, e.target.checked)}
-                              className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
-                            />
-                            <div>
-                              <label htmlFor={field.name} className="text-sm font-medium text-gray-700">
-                                {field.label}
-                              </label>
-                              {field.description && (
-                                <p className="text-xs text-gray-500 mt-1">{field.description}</p>
-                              )}
+              {(formData.deliveryMethod === 'instant' || formData.deliveryMethod === 'email') && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Licensing Options</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {configData.fields.filter(field => field.section === 'licensing').map((field, index) => {
+                      const isVisible = !field.dependsOn || formData[field.dependsOn]
+                      if (!isVisible) return null
+                      
+                      return (
+                        <motion.div
+                          key={field.name}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          className={field.type === 'textarea' ? 'md:col-span-2' : ''}
+                        >
+                          {field.type === 'checkbox' ? (
+                            <div className="flex items-center space-x-3">
+                              <input
+                                type="checkbox"
+                                id={field.name}
+                                checked={formData[field.name] || false}
+                                onChange={(e) => handleInputChange(field.name, e.target.checked)}
+                                className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+                              />
+                              <div>
+                                <label htmlFor={field.name} className="text-sm font-medium text-gray-700">
+                                  {field.label}
+                                </label>
+                                {field.description && (
+                                  <p className="text-xs text-gray-500 mt-1">{field.description}</p>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        ) : field.type === 'select' ? (
-                          <FormField
-                            type="select"
-                            label={field.label}
-                            value={formData[field.name] || ''}
-                            onChange={(e) => handleInputChange(field.name, e.target.value)}
-                            options={field.options}
-                            className="w-full"
-                          />
-                        ) : (
-                          <FormField
-                            type={field.type}
-                            label={field.label}
-                            value={formData[field.name] || ''}
-                            onChange={(e) => handleInputChange(field.name, field.type === 'number' ? parseInt(e.target.value) || 0 : e.target.value)}
-                            className="w-full"
-                          />
-                        )}
-                        {field.description && field.type !== 'checkbox' && (
-                          <p className="text-xs text-gray-500 mt-1">{field.description}</p>
-                        )}
-                      </motion.div>
-                    )
-                  })}
+                          ) : field.type === 'select' ? (
+                            <FormField
+                              type="select"
+                              label={field.label}
+                              value={formData[field.name] || ''}
+                              onChange={(e) => handleInputChange(field.name, e.target.value)}
+                              options={field.options}
+                              className="w-full"
+                            />
+                          ) : (
+                            <FormField
+                              type={field.type}
+                              label={field.label}
+                              value={formData[field.name] || ''}
+                              onChange={(e) => handleInputChange(field.name, field.type === 'number' ? parseInt(e.target.value) || 0 : e.target.value)}
+                              className="w-full"
+                            />
+                          )}
+                          {field.description && field.type !== 'checkbox' && (
+                            <p className="text-xs text-gray-500 mt-1">{field.description}</p>
+                          )}
+                        </motion.div>
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
-
+              )}
               {/* Payment Settings Section */}
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Settings</h3>
@@ -578,7 +582,7 @@ const handleInputChange = (field, value) => {
                 </Button>
               </div>
             </div>
-          </Card>
+</Card>
         </motion.div>
       </div>
     </div>
