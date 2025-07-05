@@ -6,6 +6,10 @@ const FormField = ({ type = 'input', ...props }) => {
     return <Select {...props} />
   }
   
+  if (type === 'textarea') {
+    return <Input type="textarea" {...props} />
+  }
+  
   return <Input {...props} />
 }
 

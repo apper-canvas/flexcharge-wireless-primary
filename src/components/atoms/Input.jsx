@@ -22,20 +22,30 @@ const Input = forwardRef(({
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
       )}
-      <div className="relative">
-        {icon && iconPosition === 'left' && (
+<div className="relative">
+        {icon && iconPosition === 'left' && type !== 'textarea' && (
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <ApperIcon name={icon} className="w-5 h-5 text-gray-400" />
           </div>
         )}
-        <input
-          ref={ref}
-          type={type}
-          placeholder={placeholder}
-          className={`${baseClasses} ${icon && iconPosition === 'left' ? 'pl-10' : ''} ${icon && iconPosition === 'right' ? 'pr-10' : ''} ${error ? 'border-red-500 focus:ring-red-500' : ''}`}
-          {...props}
-        />
-        {icon && iconPosition === 'right' && (
+        {type === 'textarea' ? (
+          <textarea
+            ref={ref}
+            placeholder={placeholder}
+            className={`${baseClasses} ${error ? 'border-red-500 focus:ring-red-500' : ''} resize-none`}
+            rows={props.rows || 3}
+            {...props}
+          />
+        ) : (
+          <input
+            ref={ref}
+            type={type}
+            placeholder={placeholder}
+            className={`${baseClasses} ${icon && iconPosition === 'left' ? 'pl-10' : ''} ${icon && iconPosition === 'right' ? 'pr-10' : ''} ${error ? 'border-red-500 focus:ring-red-500' : ''}`}
+            {...props}
+          />
+        )}
+        {icon && iconPosition === 'right' && type !== 'textarea' && (
           <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
             <ApperIcon name={icon} className="w-5 h-5 text-gray-400" />
           </div>

@@ -262,13 +262,14 @@ return (
                 required
               />
               
-              <FormField
+<FormField
                 label="Configuration Summary"
-                type="input"
-                placeholder="Enter configuration details"
+                type="textarea"
+                placeholder="Enter detailed configuration information..."
                 value={formData.configurationSummary}
                 onChange={(e) => handleInputChange('configurationSummary', e.target.value)}
                 error={formErrors.configurationSummary}
+                rows={4}
                 required
               />
               
