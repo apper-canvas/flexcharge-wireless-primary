@@ -232,103 +232,129 @@
   },
   {
     "Id": 2,
-    "modelType": "credit",
+"modelType": "credit",
     "title": "Credit System Configuration",
-    "description": "Configure your credit-based billing system with credit packages, pricing tiers, and usage policies",
+    "description": "Configure your credit-based billing system with credit definition, packages, rules, and consumption rates",
     "defaultSettings": {
-      "minimumCredits": 100,
+      "creditName": "FlexCredits",
+      "creditSymbol": "FC",
+      "baseValue": 0.01,
       "creditExpiration": 365,
-      "autoRecharge": false,
-      "bonusCredits": 0,
-      "creditTransferEnabled": false
+      "allowNegativeBalance": false,
+      "autoRechargeEnabled": false,
+      "creditPackages": [
+        {
+          "id": 1,
+          "packageName": "Starter",
+          "credits": 100,
+          "price": 10,
+          "bonusCredits": 0,
+          "badge": "",
+          "order": 1
+        },
+        {
+          "id": 2,
+          "packageName": "Popular",
+          "credits": 500,
+          "price": 45,
+          "bonusCredits": 25,
+          "badge": "Most Popular",
+          "order": 2
+        },
+        {
+          "id": 3,
+          "packageName": "Pro",
+          "credits": 1000,
+          "price": 85,
+          "bonusCredits": 75,
+          "badge": "Best Value",
+          "order": 3
+        }
+      ],
+      "consumptionRates": [
+        {
+          "id": 1,
+          "operation": "API Call",
+          "creditsRequired": 1
+        },
+        {
+          "id": 2,
+          "operation": "File Upload",
+          "creditsRequired": 5
+        },
+        {
+          "id": 3,
+          "operation": "Report Generation",
+          "creditsRequired": 10
+        },
+        {
+          "id": 4,
+          "operation": "Email Send",
+          "creditsRequired": 2
+        }
+      ]
     },
     "fields": [
       {
-        "name": "minimumCredits",
-        "label": "Minimum Credit Purchase",
-        "type": "number",
-        "section": "pricing",
+        "name": "creditName",
+        "label": "Credit Name",
+        "type": "text",
+        "section": "definition",
         "required": true,
-        "description": "Minimum number of credits customers must purchase"
+        "description": "Display name for your credit system"
+      },
+      {
+        "name": "creditSymbol",
+        "label": "Credit Symbol",
+        "type": "text",
+        "section": "definition",
+        "required": true,
+        "description": "Short symbol or abbreviation for credits"
+      },
+      {
+        "name": "baseValue",
+        "label": "Base Value (USD)",
+        "type": "number",
+        "section": "definition",
+        "required": true,
+        "description": "Base monetary value per credit in USD"
       },
       {
         "name": "creditPackages",
         "label": "Credit Packages",
         "type": "array",
-        "section": "pricing",
+        "section": "packages",
         "required": true,
-        "description": "Define available credit packages with pricing",
-        "defaultValue": [
-          { "credits": 100, "price": 10, "bonus": 0 },
-          { "credits": 500, "price": 45, "bonus": 25 },
-          { "credits": 1000, "price": 85, "bonus": 75 }
-        ]
+        "description": "Define available credit packages with pricing and bonuses"
       },
       {
         "name": "creditExpiration",
         "label": "Credit Expiration (days)",
         "type": "number",
-        "section": "policies",
+        "section": "rules",
         "description": "Number of days before unused credits expire (0 for no expiration)"
       },
       {
-        "name": "expirationWarning",
-        "label": "Expiration Warning (days)",
-        "type": "number",
-        "section": "policies",
-        "dependsOn": "creditExpiration",
-        "description": "Days before expiration to warn customers"
+        "name": "allowNegativeBalance",
+        "label": "Allow Negative Balance",
+        "type": "checkbox",
+        "section": "rules",
+        "description": "Allow users to go below zero credits"
       },
       {
-        "name": "autoRecharge",
-        "label": "Auto-Recharge",
+        "name": "autoRechargeEnabled",
+        "label": "Auto-recharge",
         "type": "checkbox",
-        "section": "automation",
+        "section": "rules",
         "description": "Automatically recharge credits when balance is low"
       },
       {
-        "name": "rechargeThreshold",
-        "label": "Recharge Threshold",
-        "type": "number",
-        "section": "automation",
-        "dependsOn": "autoRecharge",
-        "description": "Credit balance that triggers auto-recharge"
-      },
-      {
-        "name": "rechargeAmount",
-        "label": "Recharge Amount",
-        "type": "number",
-        "section": "automation",
-        "dependsOn": "autoRecharge",
-        "description": "Number of credits to purchase during auto-recharge"
-      },
-      {
-        "name": "creditTransferEnabled",
-        "label": "Allow Credit Transfers",
-        "type": "checkbox",
-        "section": "features",
-        "description": "Allow customers to transfer credits to other accounts"
-      },
-      {
-        "name": "transferFee",
-        "label": "Transfer Fee (%)",
-        "type": "number",
-        "section": "features",
-        "dependsOn": "creditTransferEnabled",
-        "description": "Percentage fee for credit transfers"
-      },
-      {
-        "name": "refundPolicy",
-        "label": "Refund Policy",
-        "type": "select",
-        "section": "policies",
-        "options": [
-          { "value": "none", "label": "No Refunds" },
-          { "value": "unused", "label": "Unused Credits Only" },
-          { "value": "partial", "label": "Partial Refunds" },
-          { "value": "full", "label": "Full Refunds Within 30 Days" }
-        ],
-        "description": "Policy for refunding unused credits"
+        "name": "consumptionRates",
+        "label": "Consumption Rates",
+        "type": "array",
+        "section": "consumption",
+        "required": true,
+        "description": "Define how credits are consumed for different operations"
       }
     ]
   },
