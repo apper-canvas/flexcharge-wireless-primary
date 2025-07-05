@@ -1,123 +1,52 @@
 [
   {
+    "Id": 1,
     "modelType": "one-time",
     "title": "One-Time Purchase Configuration",
-    "description": "Configure your one-time purchase billing model settings",
-    "fields": [
-      {
-        "name": "productName",
-        "label": "Product Name",
-        "type": "text",
-        "required": true,
-        "description": "Enter the name of your product or service"
-      },
-      {
-        "name": "price",
-        "label": "Price",
-        "type": "number",
-        "required": true,
-        "description": "Set the one-time purchase price"
-      },
-      {
-        "name": "currency",
-        "label": "Currency",
-        "type": "select",
-        "required": true,
-        "options": [
-          { "value": "USD", "label": "USD ($)" },
-          { "value": "EUR", "label": "EUR (€)" },
-          { "value": "GBP", "label": "GBP (£)" }
-        ],
-        "description": "Select your preferred currency"
-      },
+    "description": "Configure settings for one-time purchase billing",
+"defaultSettings": {
+      "deliveryMethod": "instant_download",
+      "downloadLimit": 3,
+      "linkExpiration": 7,
+      "ipRestriction": false,
+      "emailTemplate": "default",
+      "attachmentSizeLimit": 100,
+      "accessDuration": 365,
+      "deviceLimit": 0,
+      "licenseType": "single_user",
+      "generateLicenseKeys": false,
+      "activationRequired": false,
+      "acceptPreorders": false,
+      "chargeTiming": "immediate",
+      "partialPayments": false,
+      "minimumDeposit": 0,
+      "refundPolicyType": "standard",
+      "policyText": "Standard refund policy applies to all purchases.",
+      "enableInstantDownload": true,
+      "requireEmailVerification": false,
+      "allowGuestCheckout": true,
+      "currency": "USD",
+      "taxIncluded": false,
+      "enableDiscounts": true,
+      "enableBulkPricing": false,
+      "enableRefunds": true,
+      "refundPeriod": 30,
+      "paymentMethods": ["credit_card", "paypal", "bank_transfer"]
+    },
+"fields": [
       {
         "name": "deliveryMethod",
         "label": "Delivery Method",
         "type": "select",
-        "required": true,
         "options": [
-          { "value": "instant-download", "label": "Instant Download" },
-          { "value": "email-delivery", "label": "Email Delivery" },
-          { "value": "account-based", "label": "Account-Based Access" }
+          { "value": "instant_download", "label": "Instant Download" },
+          { "value": "email_delivery", "label": "Email Delivery" },
+          { "value": "account_access", "label": "Account-Based Access" },
+          { "value": "api_webhook", "label": "API/Webhook" },
+          { "value": "no_delivery", "label": "No Delivery" }
         ],
-        "description": "Select how customers will receive their purchase"
+        "description": "How customers receive their purchased products"
       },
-      {
-        "name": "downloadLimit",
-        "label": "Download Limit",
-        "type": "number",
-        "description": "Maximum number of downloads allowed per purchase"
-      },
-      {
-        "name": "linkExpiration",
-        "label": "Link Expiration (hours)",
-        "type": "number",
-        "description": "Number of hours before download link expires"
-      },
-      {
-        "name": "ipRestriction",
-        "label": "IP Restriction",
-        "type": "checkbox",
-        "description": "Restrict downloads to the purchaser's IP address"
-      },
-      {
-        "name": "emailTemplate",
-        "label": "Email Template",
-        "type": "select",
-        "options": [
-          { "value": "standard", "label": "Standard Template" },
-          { "value": "professional", "label": "Professional Template" },
-          { "value": "custom", "label": "Custom Template" }
-        ],
-        "description": "Choose the email template for delivery"
-      },
-      {
-        "name": "attachmentSizeLimit",
-        "label": "Attachment Size Limit (MB)",
-        "type": "number",
-        "description": "Maximum size for email attachments"
-      },
-      {
-        "name": "accessDuration",
-        "label": "Access Duration (days)",
-        "type": "number",
-        "description": "Number of days customers have access to the product"
-      },
-      {
-        "name": "deviceLimit",
-        "label": "Device Limit",
-        "type": "number",
-        "description": "Maximum number of devices that can access the product"
-      },
-      {
-        "name": "taxIncluded",
-        "label": "Tax Included",
-        "type": "checkbox",
-        "description": "Check if the price includes tax"
-      },
-      {
-        "name": "description",
-        "label": "Product Description",
-        "type": "textarea",
-        "description": "Provide a detailed description of your product"
-      }
-    ],
-"defaultSettings": {
-      "productName": "",
-      "price": 0,
-      "currency": "USD",
-      "deliveryMethod": "instant-download",
-      "downloadLimit": 3,
-      "linkExpiration": 24,
-      "ipRestriction": false,
-      "emailTemplate": "standard",
-      "attachmentSizeLimit": 10,
-      "accessDuration": 30,
-      "deviceLimit": 2,
-      "taxIncluded": false,
-      "description": ""
-    },
-    "fields": [
       {
         "name": "downloadLimit",
         "label": "Download Limit",
