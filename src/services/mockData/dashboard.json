@@ -1,0 +1,39 @@
+{
+  "recentOrders": [
+    {
+      "Id": 1,
+      "customerName": "John Doe",
+      "product": "Premium API Package",
+      "amount": 299.99,
+      "date": "2024-01-15"
+    },
+    {
+      "Id": 2,
+      "customerName": "Sarah Johnson",
+      "product": "Credit Bundle - 10K",
+      "amount": 149.99,
+      "date": "2024-01-15"
+    },
+    {
+      "Id": 3,
+      "customerName": "Mike Wilson",
+      "product": "Website Template",
+      "amount": 79.99,
+      "date": "2024-01-14"
+    },
+    {
+      "Id": 4,
+      "customerName": "Emma Davis",
+      "product": "Consulting Package",
+      "amount": 1299.99,
+      "date": "2024-01-14"
+    },
+    {
+      "Id": 5,
+      "customerName": "Alex Chen",
+      "product": "Mobile App License",
+      "amount": 199.99,
+      "date": "2024-01-13"
+    }
+  ]
+}

@@ -1,0 +1,315 @@
+{
+  "7d": {
+    "totalRevenue": 5240.00,
+    "revenueGrowth": 18,
+    "totalOrders": 23,
+    "ordersGrowth": 15,
+    "averageOrderValue": 227.83,
+    "aovGrowth": 8,
+    "conversionRate": 4.2,
+    "conversionGrowth": 0.5,
+    "topProducts": [
+      {
+        "Id": 1,
+        "name": "Premium API Package",
+        "sales": 8,
+        "revenue": 2399.92
+      },
+      {
+        "Id": 2,
+        "name": "Credit Bundle - 10K",
+        "sales": 6,
+        "revenue": 899.94
+      },
+      {
+        "Id": 3,
+        "name": "Website Template Pro",
+        "sales": 4,
+        "revenue": 319.96
+      }
+    ],
+    "topCustomers": [
+      {
+        "Id": 1,
+        "name": "John Doe",
+        "orders": 3,
+        "totalSpent": 849.97
+      },
+      {
+        "Id": 2,
+        "name": "Sarah Johnson",
+        "orders": 2,
+        "totalSpent": 449.98
+      },
+      {
+        "Id": 3,
+        "name": "Mike Wilson",
+        "orders": 2,
+        "totalSpent": 279.98
+      }
+    ],
+    "revenueBreakdown": [
+      {
+        "model": "One-Time",
+        "amount": 3240.00,
+        "percentage": 62,
+        "icon": "ShoppingCart",
+        "color": "bg-gradient-to-r from-blue-500 to-blue-600"
+      },
+      {
+        "model": "Credit System",
+        "amount": 1500.00,
+        "percentage": 29,
+        "icon": "Coins",
+        "color": "bg-gradient-to-r from-green-500 to-green-600"
+      },
+      {
+        "model": "Usage-Based",
+        "amount": 500.00,
+        "percentage": 9,
+        "icon": "Activity",
+        "color": "bg-gradient-to-r from-purple-500 to-purple-600"
+      }
+    ]
+  },
+  "30d": {
+    "totalRevenue": 24500.00,
+    "revenueGrowth": 12,
+    "totalOrders": 156,
+    "ordersGrowth": 8,
+    "averageOrderValue": 157.05,
+    "aovGrowth": 4,
+    "conversionRate": 3.2,
+    "conversionGrowth": 0.4,
+    "topProducts": [
+      {
+        "Id": 1,
+        "name": "Premium API Package",
+        "sales": 42,
+        "revenue": 12599.58
+      },
+      {
+        "Id": 2,
+        "name": "Credit Bundle - 10K",
+        "sales": 28,
+        "revenue": 4199.72
+      },
+      {
+        "Id": 3,
+        "name": "Website Template Pro",
+        "sales": 24,
+        "revenue": 1919.76
+      }
+    ],
+    "topCustomers": [
+      {
+        "Id": 1,
+        "name": "David Brown",
+        "orders": 8,
+        "totalSpent": 2199.94
+      },
+      {
+        "Id": 2,
+        "name": "Emma Davis",
+        "orders": 6,
+        "totalSpent": 1599.98
+      },
+      {
+        "Id": 3,
+        "name": "John Doe",
+        "orders": 8,
+        "totalSpent": 1249.97
+      }
+    ],
+    "revenueBreakdown": [
+      {
+        "model": "One-Time",
+        "amount": 14700.00,
+        "percentage": 60,
+        "icon": "ShoppingCart",
+        "color": "bg-gradient-to-r from-blue-500 to-blue-600"
+      },
+      {
+        "model": "Credit System",
+        "amount": 6125.00,
+        "percentage": 25,
+        "icon": "Coins",
+        "color": "bg-gradient-to-r from-green-500 to-green-600"
+      },
+      {
+        "model": "Usage-Based",
+        "amount": 2450.00,
+        "percentage": 10,
+        "icon": "Activity",
+        "color": "bg-gradient-to-r from-purple-500 to-purple-600"
+      },
+      {
+        "model": "Milestone",
+        "amount": 1225.00,
+        "percentage": 5,
+        "icon": "Calendar",
+        "color": "bg-gradient-to-r from-pink-500 to-pink-600"
+      }
+    ]
+  },
+  "90d": {
+    "totalRevenue": 68750.00,
+    "revenueGrowth": 22,
+    "totalOrders": 423,
+    "ordersGrowth": 18,
+    "averageOrderValue": 162.59,
+    "aovGrowth": 3,
+    "conversionRate": 3.8,
+    "conversionGrowth": 0.6,
+    "topProducts": [
+      {
+        "Id": 1,
+        "name": "Premium API Package",
+        "sales": 115,
+        "revenue": 34498.85
+      },
+      {
+        "Id": 2,
+        "name": "Credit Bundle - 10K",
+        "sales": 78,
+        "revenue": 11699.22
+      },
+      {
+        "Id": 3,
+        "name": "Website Template Pro",
+        "sales": 65,
+        "revenue": 5199.35
+      }
+    ],
+    "topCustomers": [
+      {
+        "Id": 1,
+        "name": "David Brown",
+        "orders": 15,
+        "totalSpent": 4299.85
+      },
+      {
+        "Id": 2,
+        "name": "Emma Davis",
+        "orders": 12,
+        "totalSpent": 3499.89
+      },
+      {
+        "Id": 3,
+        "name": "John Doe",
+        "orders": 14,
+        "totalSpent": 2899.93
+      }
+    ],
+    "revenueBreakdown": [
+      {
+        "model": "One-Time",
+        "amount": 41250.00,
+        "percentage": 60,
+        "icon": "ShoppingCart",
+        "color": "bg-gradient-to-r from-blue-500 to-blue-600"
+      },
+      {
+        "model": "Credit System",
+        "amount": 16906.25,
+        "percentage": 25,
+        "icon": "Coins",
+        "color": "bg-gradient-to-r from-green-500 to-green-600"
+      },
+      {
+        "model": "Usage-Based",
+        "amount": 6875.00,
+        "percentage": 10,
+        "icon": "Activity",
+        "color": "bg-gradient-to-r from-purple-500 to-purple-600"
+      },
+      {
+        "model": "Milestone",
+        "amount": 3437.50,
+        "percentage": 5,
+        "icon": "Calendar",
+        "color": "bg-gradient-to-r from-pink-500 to-pink-600"
+      }
+    ]
+  },
+  "1y": {
+    "totalRevenue": 294500.00,
+    "revenueGrowth": 35,
+    "totalOrders": 1847,
+    "ordersGrowth": 28,
+    "averageOrderValue": 159.48,
+    "aovGrowth": 5,
+    "conversionRate": 4.1,
+    "conversionGrowth": 0.8,
+    "topProducts": [
+      {
+        "Id": 1,
+        "name": "Premium API Package",
+        "sales": 498,
+        "revenue": 149400.02
+      },
+      {
+        "Id": 2,
+        "name": "Credit Bundle - 10K",
+        "sales": 324,
+        "revenue": 48597.76
+      },
+      {
+        "Id": 3,
+        "name": "Website Template Pro",
+        "sales": 278,
+        "revenue": 22237.22
+      }
+    ],
+    "topCustomers": [
+      {
+        "Id": 1,
+        "name": "David Brown",
+        "orders": 65,
+        "totalSpent": 18499.35
+      },
+      {
+        "Id": 2,
+        "name": "Emma Davis",
+        "orders": 58,
+        "totalSpent": 15299.42
+      },
+      {
+        "Id": 3,
+        "name": "John Doe",
+        "orders": 62,
+        "totalSpent": 12899.38
+      }
+    ],
+    "revenueBreakdown": [
+      {
+        "model": "One-Time",
+        "amount": 176700.00,
+        "percentage": 60,
+        "icon": "ShoppingCart",
+        "color": "bg-gradient-to-r from-blue-500 to-blue-600"
+      },
+      {
+        "model": "Credit System",
+        "amount": 73625.00,
+        "percentage": 25,
+        "icon": "Coins",
+        "color": "bg-gradient-to-r from-green-500 to-green-600"
+      },
+      {
+        "model": "Usage-Based",
+        "amount": 29450.00,
+        "percentage": 10,
+        "icon": "Activity",
+        "color": "bg-gradient-to-r from-purple-500 to-purple-600"
+      },
+      {
+        "model": "Milestone",
+        "amount": 14725.00,
+        "percentage": 5,
+        "icon": "Calendar",
+        "color": "bg-gradient-to-r from-pink-500 to-pink-600"
+      }
+    ]
+  }
+}

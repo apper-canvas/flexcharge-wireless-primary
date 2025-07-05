@@ -1,0 +1,74 @@
+[
+  {
+    "Id": 1,
+    "name": "TechSolutions Inc",
+    "email": "contact@techsolutions.com",
+    "status": "active",
+    "productCount": 15,
+    "totalSales": 12450.00,
+    "commissionRate": 15,
+    "pendingPayout": 1867.50,
+    "joinDate": "2023-08-15",
+    "lastPayout": "2024-01-01"
+  },
+  {
+    "Id": 2,
+    "name": "Creative Studio",
+    "email": "hello@creativestudio.com",
+    "status": "active",
+    "productCount": 8,
+    "totalSales": 8900.00,
+    "commissionRate": 12,
+    "pendingPayout": 1068.00,
+    "joinDate": "2023-09-22",
+    "lastPayout": "2024-01-01"
+  },
+  {
+    "Id": 3,
+    "name": "Digital Assets Co",
+    "email": "support@digitalassets.com",
+    "status": "pending",
+    "productCount": 0,
+    "totalSales": 0.00,
+    "commissionRate": 15,
+    "pendingPayout": 0.00,
+    "joinDate": "2024-01-10",
+    "lastPayout": null
+  },
+  {
+    "Id": 4,
+    "name": "InnovateLabs",
+    "email": "team@innovatelabs.com",
+    "status": "active",
+    "productCount": 22,
+    "totalSales": 18750.00,
+    "commissionRate": 18,
+    "pendingPayout": 3375.00,
+    "joinDate": "2023-07-12",
+    "lastPayout": "2024-01-01"
+  },
+  {
+    "Id": 5,
+    "name": "DevTools Pro",
+    "email": "info@devtoolspro.com",
+    "status": "suspended",
+    "productCount": 5,
+    "totalSales": 2100.00,
+    "commissionRate": 10,
+    "pendingPayout": 0.00,
+    "joinDate": "2023-11-08",
+    "lastPayout": "2023-12-01"
+  },
+  {
+    "Id": 6,
+    "name": "CodeCrafters",
+    "email": "hello@codecrafters.com",
+    "status": "active",
+    "productCount": 12,
+    "totalSales": 9600.00,
+    "commissionRate": 15,
+    "pendingPayout": 1440.00,
+    "joinDate": "2023-10-03",
+    "lastPayout": "2024-01-01"
+  }
+]

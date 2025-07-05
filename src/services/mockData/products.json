@@ -1,0 +1,82 @@
+[
+  {
+    "Id": 1,
+    "name": "Premium API Package",
+    "sku": "API-PREM-001",
+    "description": "Advanced API access with unlimited requests and priority support",
+    "category": "API Access",
+    "price": 299.99,
+    "billingModel": "one-time",
+    "status": "active"
+  },
+  {
+    "Id": 2,
+    "name": "Credit Bundle - 10K",
+    "sku": "CREDIT-10K",
+    "description": "10,000 credits for AI processing and image generation",
+    "category": "Credits",
+    "price": 149.99,
+    "billingModel": "credit",
+    "status": "active"
+  },
+  {
+    "Id": 3,
+    "name": "Website Template Pro",
+    "sku": "TEMPLATE-001",
+    "description": "Professional website template with source code",
+    "category": "Templates",
+    "price": 79.99,
+    "billingModel": "one-time",
+    "status": "active"
+  },
+  {
+    "Id": 4,
+    "name": "Cloud Storage - Usage",
+    "sku": "STORAGE-001",
+    "description": "Pay-per-GB cloud storage solution",
+    "category": "Storage",
+    "price": 0.05,
+    "billingModel": "usage",
+    "status": "active"
+  },
+  {
+    "Id": 5,
+    "name": "Mobile App License",
+    "sku": "APP-LIC-001",
+    "description": "Commercial license for mobile application",
+    "category": "Licenses",
+    "price": 199.99,
+    "billingModel": "one-time",
+    "status": "active"
+  },
+  {
+    "Id": 6,
+    "name": "Consulting Package",
+    "sku": "CONSULT-001",
+    "description": "3-month consulting package with milestones",
+    "category": "Services",
+    "price": 1299.99,
+    "billingModel": "milestone",
+    "status": "active"
+  },
+  {
+    "Id": 7,
+    "name": "Credit Bundle - 1K",
+    "sku": "CREDIT-1K",
+    "description": "1,000 credits for basic processing",
+    "category": "Credits",
+    "price": 19.99,
+    "billingModel": "credit",
+    "status": "active"
+  },
+  {
+    "Id": 8,
+    "name": "Premium Plugin",
+    "sku": "PLUGIN-001",
+    "description": "Advanced plugin with extended features",
+    "category": "Plugins",
+    "price": 49.99,
+    "billingModel": "one-time",
+    "status": "inactive"
+  }
+]

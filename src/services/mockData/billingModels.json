@@ -1,0 +1,57 @@
+[
+  {
+    "Id": 1,
+    "type": "one-time",
+    "title": "One-Time Purchase",
+    "description": "Single payment for products or services",
+    "icon": "ShoppingCart",
+    "gradient": "bg-gradient-to-r from-blue-500 to-blue-600",
+    "isActive": true,
+    "isPrimary": true,
+    "configurationSummary": "Instant download, 5 download limit, 30-day refund policy"
+  },
+  {
+    "Id": 2,
+    "type": "credit",
+    "title": "Credit System",
+    "description": "Pre-purchased credits for usage",
+    "icon": "Coins",
+    "gradient": "bg-gradient-to-r from-green-500 to-green-600",
+    "isActive": true,
+    "isPrimary": false,
+    "configurationSummary": "Credits expire in 12 months, negative balance allowed"
+  },
+  {
+    "Id": 3,
+    "type": "usage",
+    "title": "Usage-Based",
+    "description": "Pay-as-you-go pricing model",
+    "icon": "Activity",
+    "gradient": "bg-gradient-to-r from-purple-500 to-purple-600",
+    "isActive": false,
+    "isPrimary": false,
+    "configurationSummary": "Tiered pricing, monthly billing, usage alerts enabled"
+  },
+  {
+    "Id": 4,
+    "type": "marketplace",
+    "title": "Marketplace",
+    "description": "Multi-vendor platform with commissions",
+    "icon": "Store",
+    "gradient": "bg-gradient-to-r from-orange-500 to-orange-600",
+    "isActive": false,
+    "isPrimary": false,
+    "configurationSummary": "15% commission rate, weekly payouts, KYC required"
+  },
+  {
+    "Id": 5,
+    "type": "milestone",
+    "title": "Milestone/Project",
+    "description": "Phased payments for project completion",
+    "icon": "Calendar",
+    "gradient": "bg-gradient-to-r from-pink-500 to-pink-600",
+    "isActive": false,
+    "isPrimary": false,
+    "configurationSummary": "50% upfront, escrow enabled, 7-day approval window"
+  }
+]

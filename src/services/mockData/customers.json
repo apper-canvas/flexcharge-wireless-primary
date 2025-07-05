@@ -1,0 +1,82 @@
+[
+  {
+    "Id": 1,
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "totalSpent": 1249.97,
+    "totalOrders": 8,
+    "creditBalance": 250.00,
+    "joinDate": "2023-08-15",
+    "lastOrder": "2024-01-15"
+  },
+  {
+    "Id": 2,
+    "name": "Sarah Johnson",
+    "email": "sarah.johnson@example.com",
+    "totalSpent": 899.96,
+    "totalOrders": 12,
+    "creditBalance": 75.50,
+    "joinDate": "2023-09-22",
+    "lastOrder": "2024-01-14"
+  },
+  {
+    "Id": 3,
+    "name": "Mike Wilson",
+    "email": "mike.wilson@example.com",
+    "totalSpent": 349.97,
+    "totalOrders": 5,
+    "creditBalance": 0.00,
+    "joinDate": "2023-11-08",
+    "lastOrder": "2024-01-13"
+  },
+  {
+    "Id": 4,
+    "name": "Emma Davis",
+    "email": "emma.davis@example.com",
+    "totalSpent": 1599.98,
+    "totalOrders": 6,
+    "creditBalance": 125.00,
+    "joinDate": "2023-07-12",
+    "lastOrder": "2024-01-12"
+  },
+  {
+    "Id": 5,
+    "name": "Alex Chen",
+    "email": "alex.chen@example.com",
+    "totalSpent": 679.95,
+    "totalOrders": 9,
+    "creditBalance": 30.25,
+    "joinDate": "2023-10-03",
+    "lastOrder": "2024-01-11"
+  },
+  {
+    "Id": 6,
+    "name": "Lisa Anderson",
+    "email": "lisa.anderson@example.com",
+    "totalSpent": 199.99,
+    "totalOrders": 3,
+    "creditBalance": 0.00,
+    "joinDate": "2023-12-01",
+    "lastOrder": "2024-01-10"
+  },
+  {
+    "Id": 7,
+    "name": "David Brown",
+    "email": "david.brown@example.com",
+    "totalSpent": 2199.94,
+    "totalOrders": 15,
+    "creditBalance": 450.00,
+    "joinDate": "2023-06-18",
+    "lastOrder": "2024-01-09"
+  },
+  {
+    "Id": 8,
+    "name": "Jennifer Garcia",
+    "email": "jennifer.garcia@example.com",
+    "totalSpent": 79.99,
+    "totalOrders": 1,
+    "creditBalance": 0.00,
+    "joinDate": "2024-01-08",
+    "lastOrder": "2024-01-08"
+  }
+]
