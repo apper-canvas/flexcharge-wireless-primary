@@ -264,50 +264,116 @@ const CreditConfig = () => {
               <ApperIcon name="Shield" size={20} className="text-primary" />
               <h3 className="text-lg font-semibold text-gray-900">Credit Rules</h3>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <FormField
-                  type="number"
-                  label="Credit Expiration (days)"
-                  value={formData.creditExpiration || ''}
-                  onChange={(e) => handleInputChange('creditExpiration', parseInt(e.target.value) || 0)}
-                  className="w-full"
-                  placeholder="365 (0 for no expiration)"
-                />
-                <p className="text-xs text-gray-500 mt-1">Number of days before unused credits expire</p>
-              </div>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <input
-                    type="checkbox"
-                    id="allowNegativeBalance"
-                    checked={formData.allowNegativeBalance || false}
-                    onChange={(e) => handleInputChange('allowNegativeBalance', e.target.checked)}
-                    className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+<div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <FormField
+                    type="number"
+                    label="Credit Expiration (days)"
+                    value={formData.creditExpiration || ''}
+                    onChange={(e) => handleInputChange('creditExpiration', parseInt(e.target.value) || 0)}
+                    className="w-full"
+                    placeholder="365 (0 for no expiration)"
                   />
-                  <div>
-                    <label htmlFor="allowNegativeBalance" className="text-sm font-medium text-gray-700">
-                      Allow Negative Balance
-                    </label>
-                    <p className="text-xs text-gray-500">Allow users to go below zero credits</p>
+                  <p className="text-xs text-gray-500 mt-1">Number of days before unused credits expire</p>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="checkbox"
+                      id="allowNegativeBalance"
+                      checked={formData.allowNegativeBalance || false}
+                      onChange={(e) => handleInputChange('allowNegativeBalance', e.target.checked)}
+                      className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+                    />
+                    <div>
+                      <label htmlFor="allowNegativeBalance" className="text-sm font-medium text-gray-700">
+                        Allow Negative Balance
+                      </label>
+                      <p className="text-xs text-gray-500">Allow users to go below zero credits</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="checkbox"
+                      id="autoRechargeEnabled"
+                      checked={formData.autoRechargeEnabled || false}
+                      onChange={(e) => handleInputChange('autoRechargeEnabled', e.target.checked)}
+                      className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+                    />
+                    <div>
+                      <label htmlFor="autoRechargeEnabled" className="text-sm font-medium text-gray-700">
+                        Auto-recharge
+                      </label>
+                      <p className="text-xs text-gray-500">Automatically recharge when balance is low</p>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <input
-                    type="checkbox"
-                    id="autoRechargeEnabled"
-                    checked={formData.autoRechargeEnabled || false}
-                    onChange={(e) => handleInputChange('autoRechargeEnabled', e.target.checked)}
-                    className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
-                  />
-                  <div>
-                    <label htmlFor="autoRechargeEnabled" className="text-sm font-medium text-gray-700">
-                      Auto-recharge
-                    </label>
-                    <p className="text-xs text-gray-500">Automatically recharge when balance is low</p>
-                  </div>
-                </div>
               </div>
+              
+              {/* Dynamic Fields - Grace Amount when Allow Negative Balance is enabled */}
+              {formData.allowNegativeBalance && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                >
+                  <div>
+                    <FormField
+                      type="number"
+                      label="Grace Amount"
+                      value={formData.graceAmount || ''}
+                      onChange={(e) => handleInputChange('graceAmount', parseInt(e.target.value) || 0)}
+                      className="w-full"
+                      placeholder="100"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Maximum negative balance allowed before restrictions</p>
+                  </div>
+                  <div></div>
+                </motion.div>
+              )}
+              
+              {/* Dynamic Fields - Threshold and Package when Auto-recharge is enabled */}
+              {formData.autoRechargeEnabled && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                >
+                  <div>
+                    <FormField
+                      type="number"
+                      label="Threshold"
+                      value={formData.rechargeThreshold || ''}
+                      onChange={(e) => handleInputChange('rechargeThreshold', parseInt(e.target.value) || 0)}
+                      className="w-full"
+                      placeholder="50"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Credit balance threshold to trigger auto-recharge</p>
+                  </div>
+                  <div>
+                    <FormField
+                      type="select"
+                      label="Package to Purchase"
+                      value={formData.autoRechargePackage || ''}
+                      onChange={(e) => handleInputChange('autoRechargePackage', e.target.value)}
+                      className="w-full"
+                      options={[
+                        { value: '', label: 'Select a package' },
+                        ...(formData.creditPackages || []).map(pkg => ({
+                          value: pkg.id,
+                          label: `${pkg.packageName} - ${pkg.credits} credits ($${pkg.price})`
+                        }))
+                      ]}
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Credit package to automatically purchase when threshold is reached</p>
+                  </div>
+                </motion.div>
+              )}
             </div>
           </Card>
 
