@@ -67,13 +67,13 @@ const handleContinue = async () => {
     }
     
     setLoading(true)
-    try {
+try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      toast.success('Billing models configured successfully')
-      navigate('/')
+      await new Promise(resolve => setTimeout(resolve, 500))
+      toast.success('Proceeding to model configuration')
+      navigate(`/billing-model-config/${selectedModel}`)
     } catch (error) {
-      toast.error('Failed to configure billing models')
+      toast.error('Failed to proceed to configuration')
     } finally {
       setLoading(false)
     }
