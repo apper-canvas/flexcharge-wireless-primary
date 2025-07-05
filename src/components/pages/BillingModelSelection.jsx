@@ -5,11 +5,12 @@ import Card from '@/components/atoms/Card'
 import Button from '@/components/atoms/Button'
 import Logo from '@/components/atoms/Logo'
 import BillingModelCard from '@/components/molecules/BillingModelCard'
+import ApperIcon from '@/components/ApperIcon'
 import { toast } from 'react-toastify'
 
 const BillingModelSelection = () => {
   const navigate = useNavigate()
-  const [selectedModels, setSelectedModels] = useState([])
+const [selectedModel, setSelectedModel] = useState(null)
   const [loading, setLoading] = useState(false)
   
   const billingModels = [
@@ -18,23 +19,23 @@ const BillingModelSelection = () => {
       title: 'One-Time Purchase',
       description: 'Single payment for products or services',
       icon: 'ShoppingCart',
-      bestFor: 'Digital downloads, tools, templates, one-time services',
+      bestFor: 'Digital downloads, tools, templates',
       gradient: 'bg-gradient-to-r from-blue-500 to-blue-600'
     },
     {
       type: 'credit',
       title: 'Credit System',
-      description: 'Pre-purchased credits for usage',
+      description: 'Pre-purchased credits consumed by usage',
       icon: 'Coins',
-      bestFor: 'AI tools, API access, image generation, file processing',
+      bestFor: 'AI tools, API access, image generation',
       gradient: 'bg-gradient-to-r from-green-500 to-green-600'
     },
     {
       type: 'usage',
       title: 'Usage-Based',
-      description: 'Pay-as-you-go pricing model',
+      description: 'Pay-as-you-go based on consumption',
       icon: 'Activity',
-      bestFor: 'Cloud services, APIs, data processing, bandwidth',
+      bestFor: 'Cloud services, APIs, data processing',
       gradient: 'bg-gradient-to-r from-purple-500 to-purple-600'
     },
     {
@@ -42,13 +43,13 @@ const BillingModelSelection = () => {
       title: 'Marketplace',
       description: 'Multi-vendor platform with commissions',
       icon: 'Store',
-      bestFor: 'Freelance platforms, app stores, service marketplaces',
+      bestFor: 'Freelance platforms, app stores, service aggregators',
       gradient: 'bg-gradient-to-r from-orange-500 to-orange-600'
     },
     {
       type: 'milestone',
       title: 'Milestone/Project',
-      description: 'Phased payments for project completion',
+      description: 'Phased payments for projects',
       icon: 'Calendar',
       bestFor: 'Freelance work, consulting, custom development',
       gradient: 'bg-gradient-to-r from-pink-500 to-pink-600'
@@ -56,18 +57,12 @@ const BillingModelSelection = () => {
   ]
   
   const handleModelSelect = (modelType) => {
-    setSelectedModels(prev => {
-      if (prev.includes(modelType)) {
-        return prev.filter(m => m !== modelType)
-      } else {
-        return [...prev, modelType]
-      }
-    })
+    setSelectedModel(modelType)
   }
   
-  const handleContinue = async () => {
-    if (selectedModels.length === 0) {
-      toast.error('Please select at least one billing model')
+const handleContinue = async () => {
+    if (!selectedModel) {
+      toast.error('Please select a billing model')
       return
     }
     
@@ -91,13 +86,20 @@ const BillingModelSelection = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/10 to-secondary/10 p-4">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-8">
+<div className="text-center mb-8">
           <Logo size="lg" className="justify-center mb-4" />
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Choose Your Billing Models</h1>
-          <p className="text-gray-600">Select one or more billing models that fit your business needs</p>
+          <div className="mb-6">
+            <div className="flex items-center justify-center space-x-2 text-sm text-gray-500 mb-2">
+              <span>Setup (1/5)</span>
+              <ApperIcon name="ArrowRight" size={16} />
+              <span className="text-primary font-medium">Model (2/5)</span>
+            </div>
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Choose Your Billing Model</h1>
+          <p className="text-gray-600">Select the primary billing model that best fits your business needs</p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
           {billingModels.map((model, index) => (
             <motion.div
               key={model.type}
@@ -107,21 +109,21 @@ const BillingModelSelection = () => {
             >
               <BillingModelCard
                 model={model}
-                isSelected={selectedModels.includes(model.type)}
+                isSelected={selectedModel === model.type}
                 onSelect={handleModelSelect}
               />
             </motion.div>
           ))}
         </div>
         
-        <Card className="p-6">
+<Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Selected Models</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Selected Model</h3>
               <p className="text-sm text-gray-600">
-                {selectedModels.length > 0 
-                  ? `${selectedModels.length} model${selectedModels.length > 1 ? 's' : ''} selected`
-                  : 'No models selected yet'
+                {selectedModel 
+                  ? `${billingModels.find(m => m.type === selectedModel)?.title} selected`
+                  : 'No model selected yet'
                 }
               </p>
             </div>
@@ -138,25 +140,25 @@ const BillingModelSelection = () => {
                 onClick={handleContinue}
                 loading={loading}
                 icon="ArrowRight"
-                disabled={selectedModels.length === 0}
+                disabled={!selectedModel}
               >
-                Continue to Dashboard
+                Continue
               </Button>
             </div>
           </div>
-</Card>
+        </Card>
         
-        <div className="text-center mt-6">
+<div className="text-center mt-6">
           <Button
-            variant="outline"
+            variant="ghost"
             onClick={() => navigate('/billing-models')}
             icon="Plus"
             className="mb-4"
           >
-            Add Billing Model
+            Add Another Model
           </Button>
           <p className="text-sm text-gray-600">
-            You can always add or remove billing models later in your settings
+            You can add additional billing models later to support multiple revenue streams
           </p>
         </div>
       </div>
