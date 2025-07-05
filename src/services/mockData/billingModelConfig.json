@@ -228,6 +228,471 @@
         "showWhen": ["standard", "extended"],
         "description": "Automatically approve refund requests within the refund window"
       }
+]
+  },
+  {
+    "Id": 2,
+    "modelType": "credit",
+    "title": "Credit System Configuration",
+    "description": "Configure your credit-based billing system with credit packages, pricing tiers, and usage policies",
+    "defaultSettings": {
+      "minimumCredits": 100,
+      "creditExpiration": 365,
+      "autoRecharge": false,
+      "bonusCredits": 0,
+      "creditTransferEnabled": false
+    },
+    "fields": [
+      {
+        "name": "minimumCredits",
+        "label": "Minimum Credit Purchase",
+        "type": "number",
+        "section": "pricing",
+        "required": true,
+        "description": "Minimum number of credits customers must purchase"
+      },
+      {
+        "name": "creditPackages",
+        "label": "Credit Packages",
+        "type": "array",
+        "section": "pricing",
+        "required": true,
+        "description": "Define available credit packages with pricing",
+        "defaultValue": [
+          { "credits": 100, "price": 10, "bonus": 0 },
+          { "credits": 500, "price": 45, "bonus": 25 },
+          { "credits": 1000, "price": 85, "bonus": 75 }
+        ]
+      },
+      {
+        "name": "creditExpiration",
+        "label": "Credit Expiration (days)",
+        "type": "number",
+        "section": "policies",
+        "description": "Number of days before unused credits expire (0 for no expiration)"
+      },
+      {
+        "name": "expirationWarning",
+        "label": "Expiration Warning (days)",
+        "type": "number",
+        "section": "policies",
+        "dependsOn": "creditExpiration",
+        "description": "Days before expiration to warn customers"
+      },
+      {
+        "name": "autoRecharge",
+        "label": "Auto-Recharge",
+        "type": "checkbox",
+        "section": "automation",
+        "description": "Automatically recharge credits when balance is low"
+      },
+      {
+        "name": "rechargeThreshold",
+        "label": "Recharge Threshold",
+        "type": "number",
+        "section": "automation",
+        "dependsOn": "autoRecharge",
+        "description": "Credit balance that triggers auto-recharge"
+      },
+      {
+        "name": "rechargeAmount",
+        "label": "Recharge Amount",
+        "type": "number",
+        "section": "automation",
+        "dependsOn": "autoRecharge",
+        "description": "Number of credits to purchase during auto-recharge"
+      },
+      {
+        "name": "creditTransferEnabled",
+        "label": "Allow Credit Transfers",
+        "type": "checkbox",
+        "section": "features",
+        "description": "Allow customers to transfer credits to other accounts"
+      },
+      {
+        "name": "transferFee",
+        "label": "Transfer Fee (%)",
+        "type": "number",
+        "section": "features",
+        "dependsOn": "creditTransferEnabled",
+        "description": "Percentage fee for credit transfers"
+      },
+      {
+        "name": "refundPolicy",
+        "label": "Refund Policy",
+        "type": "select",
+        "section": "policies",
+        "options": [
+          { "value": "none", "label": "No Refunds" },
+          { "value": "unused", "label": "Unused Credits Only" },
+          { "value": "partial", "label": "Partial Refunds" },
+          { "value": "full", "label": "Full Refunds Within 30 Days" }
+        ],
+        "description": "Policy for refunding unused credits"
+      }
+    ]
+  },
+  {
+    "Id": 3,
+    "modelType": "usage",
+    "title": "Usage-Based Configuration",
+    "description": "Configure your usage-based billing with metering, pricing tiers, and billing cycles",
+    "defaultSettings": {
+      "meteringUnit": "api_calls",
+      "billingCycle": "monthly",
+      "freeTier": 1000,
+      "overageRate": 0.01,
+      "minimumCharge": 0
+    },
+    "fields": [
+      {
+        "name": "meteringUnit",
+        "label": "Metering Unit",
+        "type": "select",
+        "section": "metering",
+        "required": true,
+        "options": [
+          { "value": "api_calls", "label": "API Calls" },
+          { "value": "requests", "label": "Requests" },
+          { "value": "storage_gb", "label": "Storage (GB)" },
+          { "value": "bandwidth_gb", "label": "Bandwidth (GB)" },
+          { "value": "compute_hours", "label": "Compute Hours" },
+          { "value": "users", "label": "Active Users" },
+          { "value": "transactions", "label": "Transactions" },
+          { "value": "custom", "label": "Custom Unit" }
+        ],
+        "description": "Unit of measurement for usage tracking"
+      },
+      {
+        "name": "customUnit",
+        "label": "Custom Unit Name",
+        "type": "text",
+        "section": "metering",
+        "dependsOn": "meteringUnit",
+        "showWhen": ["custom"],
+        "description": "Name for your custom metering unit"
+      },
+      {
+        "name": "billingCycle",
+        "label": "Billing Cycle",
+        "type": "select",
+        "section": "billing",
+        "required": true,
+        "options": [
+          { "value": "monthly", "label": "Monthly" },
+          { "value": "weekly", "label": "Weekly" },
+          { "value": "daily", "label": "Daily" },
+          { "value": "real_time", "label": "Real-time" }
+        ],
+        "description": "How often customers are billed for usage"
+      },
+      {
+        "name": "freeTier",
+        "label": "Free Tier Limit",
+        "type": "number",
+        "section": "pricing",
+        "description": "Free usage allowance per billing cycle (0 for no free tier)"
+      },
+      {
+        "name": "pricingTiers",
+        "label": "Pricing Tiers",
+        "type": "array",
+        "section": "pricing",
+        "required": true,
+        "description": "Define usage-based pricing tiers",
+        "defaultValue": [
+          { "from": 0, "to": 1000, "rate": 0 },
+          { "from": 1001, "to": 10000, "rate": 0.01 },
+          { "from": 10001, "to": null, "rate": 0.005 }
+        ]
+      },
+      {
+        "name": "minimumCharge",
+        "label": "Minimum Monthly Charge",
+        "type": "number",
+        "section": "billing",
+        "description": "Minimum amount to charge per billing cycle"
+      },
+      {
+        "name": "usageTracking",
+        "label": "Usage Tracking Method",
+        "type": "select",
+        "section": "metering",
+        "options": [
+          { "value": "api", "label": "API-based Tracking" },
+          { "value": "webhook", "label": "Webhook Events" },
+          { "value": "manual", "label": "Manual Reporting" },
+          { "value": "third_party", "label": "Third-party Integration" }
+        ],
+        "description": "How usage data is collected and tracked"
+      },
+      {
+        "name": "overage",
+        "label": "Overage Handling",
+        "type": "select",
+        "section": "policies",
+        "options": [
+          { "value": "allow", "label": "Allow Overages" },
+          { "value": "throttle", "label": "Throttle at Limit" },
+          { "value": "block", "label": "Block at Limit" },
+          { "value": "notify", "label": "Notify and Continue" }
+        ],
+        "description": "How to handle usage that exceeds limits"
+      }
+    ]
+  },
+  {
+    "Id": 4,
+    "modelType": "milestone",
+    "title": "Milestone-Based Configuration",
+    "description": "Configure milestone-based billing with project phases, deliverables, and payment schedules",
+    "defaultSettings": {
+      "paymentTiming": "on_completion",
+      "approvalRequired": true,
+      "partialPayments": false,
+      "retainerPercentage": 0,
+      "milestoneTemplate": "custom"
+    },
+    "fields": [
+      {
+        "name": "paymentTiming",
+        "label": "Payment Timing",
+        "type": "select",
+        "section": "payment",
+        "required": true,
+        "options": [
+          { "value": "on_start", "label": "On Milestone Start" },
+          { "value": "on_completion", "label": "On Milestone Completion" },
+          { "value": "on_approval", "label": "On Client Approval" },
+          { "value": "scheduled", "label": "Scheduled Date" }
+        ],
+        "description": "When payment is collected for each milestone"
+      },
+      {
+        "name": "approvalRequired",
+        "label": "Require Client Approval",
+        "type": "checkbox",
+        "section": "workflow",
+        "description": "Require client approval before marking milestones as complete"
+      },
+      {
+        "name": "approvalTimeout",
+        "label": "Approval Timeout (days)",
+        "type": "number",
+        "section": "workflow",
+        "dependsOn": "approvalRequired",
+        "description": "Days to wait for approval before auto-approving"
+      },
+      {
+        "name": "retainerPercentage",
+        "label": "Retainer Percentage",
+        "type": "number",
+        "section": "payment",
+        "description": "Percentage of total project value to collect upfront"
+      },
+      {
+        "name": "milestoneTemplate",
+        "label": "Milestone Template",
+        "type": "select",
+        "section": "templates",
+        "options": [
+          { "value": "software", "label": "Software Development" },
+          { "value": "design", "label": "Design Project" },
+          { "value": "marketing", "label": "Marketing Campaign" },
+          { "value": "consulting", "label": "Consulting Project" },
+          { "value": "custom", "label": "Custom Template" }
+        ],
+        "description": "Pre-defined milestone templates for common project types"
+      },
+      {
+        "name": "defaultMilestones",
+        "label": "Default Milestones",
+        "type": "array",
+        "section": "templates",
+        "dependsOn": "milestoneTemplate",
+        "description": "Default milestone structure for new projects",
+        "defaultValue": [
+          { "name": "Project Kickoff", "percentage": 25, "description": "Initial project setup and planning" },
+          { "name": "Design Phase", "percentage": 25, "description": "Design and prototyping" },
+          { "name": "Development", "percentage": 35, "description": "Core development work" },
+          { "name": "Testing & Launch", "percentage": 15, "description": "Testing, deployment, and launch" }
+        ]
+      },
+      {
+        "name": "latePaymentFee",
+        "label": "Late Payment Fee",
+        "type": "number",
+        "section": "policies",
+        "description": "Fixed fee for late milestone payments"
+      },
+      {
+        "name": "latePaymentRate",
+        "label": "Late Payment Rate (%)",
+        "type": "number",
+        "section": "policies",
+        "description": "Percentage rate for late milestone payments"
+      },
+      {
+        "name": "allowMilestoneChanges",
+        "label": "Allow Milestone Changes",
+        "type": "checkbox",
+        "section": "workflow",
+        "description": "Allow modification of milestones after project start"
+      },
+      {
+        "name": "changeApprovalRequired",
+        "label": "Require Approval for Changes",
+        "type": "checkbox",
+        "section": "workflow",
+        "dependsOn": "allowMilestoneChanges",
+        "description": "Require client approval for milestone changes"
+      }
+    ]
+  },
+  {
+    "Id": 5,
+    "modelType": "marketplace",
+    "title": "Marketplace Configuration",
+    "description": "Configure marketplace billing with vendor payouts, commission structures, and fee policies",
+    "defaultSettings": {
+      "commissionType": "percentage",
+      "commissionRate": 10,
+      "payoutSchedule": "monthly",
+      "minimumPayout": 50,
+      "vendorVerificationRequired": true
+    },
+    "fields": [
+      {
+        "name": "commissionType",
+        "label": "Commission Type",
+        "type": "select",
+        "section": "commission",
+        "required": true,
+        "options": [
+          { "value": "percentage", "label": "Percentage of Sale" },
+          { "value": "fixed", "label": "Fixed Amount" },
+          { "value": "tiered", "label": "Tiered Based on Volume" },
+          { "value": "hybrid", "label": "Hybrid (Fixed + Percentage)" }
+        ],
+        "description": "How commission is calculated for marketplace sales"
+      },
+      {
+        "name": "commissionRate",
+        "label": "Commission Rate (%)",
+        "type": "number",
+        "section": "commission",
+        "dependsOn": "commissionType",
+        "showWhen": ["percentage", "hybrid"],
+        "description": "Percentage commission rate for marketplace sales"
+      },
+      {
+        "name": "fixedCommission",
+        "label": "Fixed Commission Amount",
+        "type": "number",
+        "section": "commission",
+        "dependsOn": "commissionType",
+        "showWhen": ["fixed", "hybrid"],
+        "description": "Fixed commission amount per transaction"
+      },
+      {
+        "name": "tieredCommission",
+        "label": "Tiered Commission Rates",
+        "type": "array",
+        "section": "commission",
+        "dependsOn": "commissionType",
+        "showWhen": ["tiered"],
+        "description": "Commission rates based on sales volume",
+        "defaultValue": [
+          { "from": 0, "to": 1000, "rate": 15 },
+          { "from": 1001, "to": 5000, "rate": 12 },
+          { "from": 5001, "to": null, "rate": 10 }
+        ]
+      },
+      {
+        "name": "payoutSchedule",
+        "label": "Payout Schedule",
+        "type": "select",
+        "section": "payouts",
+        "required": true,
+        "options": [
+          { "value": "daily", "label": "Daily" },
+          { "value": "weekly", "label": "Weekly" },
+          { "value": "bi_weekly", "label": "Bi-weekly" },
+          { "value": "monthly", "label": "Monthly" },
+          { "value": "on_demand", "label": "On Demand" }
+        ],
+        "description": "How often vendors receive payouts"
+      },
+      {
+        "name": "minimumPayout",
+        "label": "Minimum Payout Amount",
+        "type": "number",
+        "section": "payouts",
+        "description": "Minimum amount required before payout is processed"
+      },
+      {
+        "name": "payoutHoldDays",
+        "label": "Payout Hold Period (days)",
+        "type": "number",
+        "section": "payouts",
+        "description": "Days to hold funds before making them available for payout"
+      },
+      {
+        "name": "vendorVerificationRequired",
+        "label": "Require Vendor Verification",
+        "type": "checkbox",
+        "section": "verification",
+        "description": "Require identity verification for new vendors"
+      },
+      {
+        "name": "verificationDocuments",
+        "label": "Required Documents",
+        "type": "multiselect",
+        "section": "verification",
+        "dependsOn": "vendorVerificationRequired",
+        "options": [
+          { "value": "id", "label": "Government ID" },
+          { "value": "tax_id", "label": "Tax ID Number" },
+          { "value": "business_license", "label": "Business License" },
+          { "value": "bank_info", "label": "Bank Account Information" },
+          { "value": "address_proof", "label": "Address Verification" }
+        ],
+        "description": "Documents required for vendor verification"
+      },
+      {
+        "name": "listingFees",
+        "label": "Listing Fees",
+        "type": "select",
+        "section": "fees",
+        "options": [
+          { "value": "none", "label": "No Listing Fees" },
+          { "value": "fixed", "label": "Fixed Fee per Listing" },
+          { "value": "subscription", "label": "Monthly Subscription" },
+          { "value": "success", "label": "Success Fee Only" }
+        ],
+        "description": "Fee structure for product listings"
+      },
+      {
+        "name": "listingFeeAmount",
+        "label": "Listing Fee Amount",
+        "type": "number",
+        "section": "fees",
+        "dependsOn": "listingFees",
+        "showWhen": ["fixed", "subscription"],
+        "description": "Amount charged for product listings"
+      },
+      {
+        "name": "refundPolicy",
+        "label": "Refund Policy",
+        "type": "select",
+        "section": "policies",
+        "options": [
+          { "value": "marketplace", "label": "Marketplace Handles Refunds" },
+          { "value": "vendor", "label": "Vendor Handles Refunds" },
+          { "value": "shared", "label": "Shared Responsibility" }
+        ],
+        "description": "Who is responsible for handling customer refunds"
+      }
     ]
   }
 ]
