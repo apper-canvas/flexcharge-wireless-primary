@@ -1,7 +1,7 @@
 import Input from '@/components/atoms/Input'
 import Select from '@/components/atoms/Select'
 
-const FormField = ({ type = 'input', ...props }) => {
+const FormField = ({ type = 'input', step, ...props }) => {
   if (type === 'select') {
     return <Select {...props} />
   }
@@ -10,7 +10,7 @@ const FormField = ({ type = 'input', ...props }) => {
     return <Input type="textarea" {...props} />
   }
   
-  return <Input {...props} />
+  return <Input step={step} {...props} />
 }
 
 export default FormField
