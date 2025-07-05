@@ -1,4 +1,4 @@
-import { Route, Router, Routes } from "react-router-dom";
+import { Route, BrowserRouter, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import React from "react";
 import OneTimeConfig from "@/components/pages/OneTimeConfig";
@@ -21,7 +21,7 @@ import Reports from "@/components/pages/Reports";
 
 function App() {
   return (
-    <Router>
+<BrowserRouter>
       <div className="min-h-screen bg-white">
         <Routes>
           <Route path="/onboarding" element={<Onboarding />} />
@@ -58,7 +58,7 @@ function App() {
           className="z-50"
         />
 </div>
-    </Router>
+</BrowserRouter>
   );
 }
 
