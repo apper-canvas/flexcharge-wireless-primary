@@ -244,8 +244,8 @@ export const customersService = {
         return successfulDeletions.length > 0;
       }
       
-      return false;
-} catch (error) {
+return false;
+    } catch (error) {
       if (error?.response?.data?.message) {
         console.error("Error deleting customer:", error?.response?.data?.message);
       } else {
@@ -253,6 +253,7 @@ export const customersService = {
       }
       throw error;
     }
+  },
   
   getUserOnboardingStatus: async (email) => {
     try {
