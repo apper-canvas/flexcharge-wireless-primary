@@ -1,10 +1,14 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { motion } from 'framer-motion'
+import { useSelector } from 'react-redux'
 import ApperIcon from '@/components/ApperIcon'
 import Button from '@/components/atoms/Button'
+import { AuthContext } from '@/App'
 
 const Header = ({ onMobileMenuToggle }) => {
   const [showProfile, setShowProfile] = useState(false)
+  const { logout } = useContext(AuthContext)
+  const { user } = useSelector((state) => state.user)
   
   return (
     <header className="bg-white border-b border-gray-200 px-4 py-3 lg:px-6">
@@ -63,9 +67,12 @@ const Header = ({ onMobileMenuToggle }) => {
                   Billing
                 </a>
                 <hr className="my-2" />
-                <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+<button 
+                  onClick={logout}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
                   Sign out
-                </a>
+                </button>
               </motion.div>
             )}
           </div>

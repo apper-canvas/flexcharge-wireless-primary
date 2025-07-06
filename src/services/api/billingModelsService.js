@@ -1,45 +1,265 @@
-import mockData from '@/services/mockData/billingModels.json'
-
-let models = [...mockData]
-
 export const billingModelsService = {
   getAll: async () => {
-    await new Promise(resolve => setTimeout(resolve, 200))
-    return [...models]
+    try {
+      await new Promise(resolve => setTimeout(resolve, 200))
+      
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "type" } },
+          { field: { Name: "title" } },
+          { field: { Name: "description" } },
+          { field: { Name: "icon" } },
+          { field: { Name: "gradient" } },
+          { field: { Name: "isActive" } },
+          { field: { Name: "isPrimary" } },
+          { field: { Name: "configurationSummary" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } }
+        ],
+        pagingInfo: {
+          limit: 100,
+          offset: 0
+        }
+      };
+      
+      const response = await apperClient.fetchRecords('billing_model', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+      
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching billing models:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
   },
   
   getById: async (id) => {
-    await new Promise(resolve => setTimeout(resolve, 200))
-    return models.find(model => model.Id === id)
+    try {
+      await new Promise(resolve => setTimeout(resolve, 200))
+      
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "type" } },
+          { field: { Name: "title" } },
+          { field: { Name: "description" } },
+          { field: { Name: "icon" } },
+          { field: { Name: "gradient" } },
+          { field: { Name: "isActive" } },
+          { field: { Name: "isPrimary" } },
+          { field: { Name: "configurationSummary" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } }
+        ]
+      };
+      
+      const response = await apperClient.getRecordById('billing_model', id, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+      
+      return response.data;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error(`Error fetching billing model with ID ${id}:`, error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return null;
+    }
   },
   
   create: async (modelData) => {
-    await new Promise(resolve => setTimeout(resolve, 300))
-    const newModel = {
-      ...modelData,
-      Id: Math.max(...models.map(m => m.Id)) + 1
+    try {
+      await new Promise(resolve => setTimeout(resolve, 300))
+      
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      // Only include Updateable fields
+      const updateableData = {
+        Name: modelData.Name || modelData.title,
+        type: modelData.type,
+        title: modelData.title,
+        description: modelData.description,
+        icon: modelData.icon,
+        gradient: modelData.gradient,
+        isActive: modelData.isActive,
+        isPrimary: modelData.isPrimary,
+        configurationSummary: modelData.configurationSummary,
+        Tags: modelData.Tags || "",
+        Owner: modelData.Owner
+      };
+      
+      const params = {
+        records: [updateableData]
+      };
+      
+      const response = await apperClient.createRecord('billing_model', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          
+          failedRecords.forEach(record => {
+            if (record.message) throw new Error(record.message);
+          });
+        }
+        
+        return successfulRecords.length > 0 ? successfulRecords[0].data : null;
+      }
+      
+      return null;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error creating billing model:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      throw error;
     }
-    models.push(newModel)
-    return newModel
   },
   
   update: async (id, modelData) => {
-    await new Promise(resolve => setTimeout(resolve, 300))
-    const index = models.findIndex(model => model.Id === id)
-    if (index !== -1) {
-      models[index] = { ...models[index], ...modelData }
-      return models[index]
+    try {
+      await new Promise(resolve => setTimeout(resolve, 300))
+      
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      // Only include Updateable fields
+      const updateableData = {
+        Id: parseInt(id),
+        Name: modelData.Name || modelData.title,
+        type: modelData.type,
+        title: modelData.title,
+        description: modelData.description,
+        icon: modelData.icon,
+        gradient: modelData.gradient,
+        isActive: modelData.isActive,
+        isPrimary: modelData.isPrimary,
+        configurationSummary: modelData.configurationSummary,
+        Tags: modelData.Tags,
+        Owner: modelData.Owner
+      };
+      
+      const params = {
+        records: [updateableData]
+      };
+      
+      const response = await apperClient.updateRecord('billing_model', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      if (response.results) {
+        const successfulUpdates = response.results.filter(result => result.success);
+        const failedUpdates = response.results.filter(result => !result.success);
+        
+        if (failedUpdates.length > 0) {
+          console.error(`Failed to update ${failedUpdates.length} records:${JSON.stringify(failedUpdates)}`);
+          
+          failedUpdates.forEach(record => {
+            if (record.message) throw new Error(record.message);
+          });
+        }
+        
+        return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
+      }
+      
+      return null;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error updating billing model:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      throw error;
     }
-    throw new Error('Model not found')
   },
   
   delete: async (id) => {
-    await new Promise(resolve => setTimeout(resolve, 300))
-    const index = models.findIndex(model => model.Id === id)
-    if (index !== -1) {
-      models.splice(index, 1)
-      return true
+    try {
+      await new Promise(resolve => setTimeout(resolve, 300))
+      
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+      
+      const response = await apperClient.deleteRecord('billing_model', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      if (response.results) {
+        const successfulDeletions = response.results.filter(result => result.success);
+        const failedDeletions = response.results.filter(result => !result.success);
+        
+        if (failedDeletions.length > 0) {
+          console.error(`Failed to delete ${failedDeletions.length} records:${JSON.stringify(failedDeletions)}`);
+          
+          failedDeletions.forEach(record => {
+            if (record.message) throw new Error(record.message);
+          });
+        }
+        
+        return successfulDeletions.length > 0;
+      }
+      
+      return false;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error deleting billing model:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      throw error;
     }
-    throw new Error('Model not found')
   }
 }
