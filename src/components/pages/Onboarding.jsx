@@ -1,16 +1,19 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import Card from '@/components/atoms/Card'
-import Button from '@/components/atoms/Button'
-import Input from '@/components/atoms/Input'
-import Select from '@/components/atoms/Select'
-import Logo from '@/components/atoms/Logo'
-import ApperIcon from '@/components/ApperIcon'
-import { toast } from 'react-toastify'
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react";
+import { motion } from "framer-motion";
+import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import Select from "@/components/atoms/Select";
+import Button from "@/components/atoms/Button";
+import Logo from "@/components/atoms/Logo";
+import Card from "@/components/atoms/Card";
+import Input from "@/components/atoms/Input";
+import { customersService } from "@/services/api/customersService";
 
 const Onboarding = () => {
   const navigate = useNavigate()
+  const { user } = useUser()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     organizationName: '',
@@ -51,20 +54,23 @@ const Onboarding = () => {
     }))
   }
   
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault()
     if (!formData.organizationName) {
       toast.error('Organization name is required')
       return
     }
     
-    setLoading(true)
+setLoading(true)
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      // Mark onboarding as completed in the database
+      if (user?.emailAddresses?.[0]?.emailAddress) {
+        await customersService.markOnboardingComplete(user.emailAddresses[0].emailAddress)
+      }
       toast.success('Organization setup completed')
       navigate('/billing-model-selection')
     } catch (error) {
+      console.error('Failed to complete onboarding:', error)
       toast.error('Failed to setup organization')
     } finally {
       setLoading(false)

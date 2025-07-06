@@ -62,7 +62,7 @@ function AppContent() {
       target: '#authentication',
       clientId: import.meta.env.VITE_APPER_PROJECT_ID,
       view: 'both',
-      onSuccess: function (user) {
+onSuccess: async function (user) {
         setIsInitialized(true);
         // CRITICAL: This exact currentPath logic must be preserved in all implementations
         // DO NOT simplify or modify this pattern as it ensures proper redirection flow
@@ -73,7 +73,25 @@ function AppContent() {
                            currentPath.includes('/prompt-password') || currentPath.includes('/reset-password');
         
         if (user) {
-          // User is authenticated
+          // Store user information in Redux first
+          dispatch(setUser(JSON.parse(JSON.stringify(user))));
+          
+          // Check onboarding status before navigation
+          try {
+            const { customersService } = await import('@/services/api/customersService');
+            const onboardingStatus = await customersService.getUserOnboardingStatus(user.emailAddress);
+            
+            // If onboarding not completed and not already on onboarding page
+            if (!onboardingStatus && !currentPath.includes('/onboarding')) {
+              navigate('/onboarding');
+              return;
+            }
+          } catch (error) {
+            console.error("Error checking onboarding status:", error);
+            // Continue with normal flow if onboarding check fails
+          }
+          
+          // User is authenticated - proceed with normal navigation logic
           if (redirectPath) {
             navigate(redirectPath);
           } else if (!isAuthPage) {
@@ -85,8 +103,6 @@ function AppContent() {
           } else {
             navigate('/');
           }
-          // Store user information in Redux
-          dispatch(setUser(JSON.parse(JSON.stringify(user))));
         } else {
           // User is not authenticated
           if (!isAuthPage) {

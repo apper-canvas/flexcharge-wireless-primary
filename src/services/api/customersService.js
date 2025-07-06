@@ -1,3 +1,5 @@
+import React from "react";
+import Error from "@/components/ui/Error";
 export const customersService = {
   getAll: async () => {
     try {
@@ -248,6 +250,136 @@ export const customersService = {
     } catch (error) {
       if (error?.response?.data?.message) {
         console.error("Error deleting customer:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      throw error;
+throw error;
+    }
+  },
+  
+  getUserOnboardingStatus: async (email) => {
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      const params = {
+        fields: [
+          { field: { Name: "onboardingCompleted" } }
+        ],
+        where: [
+          {
+            FieldName: "email",
+            Operator: "EqualTo",
+            Values: [email]
+          }
+        ],
+        pagingInfo: {
+          limit: 1,
+          offset: 0
+        }
+      };
+      
+      const response = await apperClient.fetchRecords('app_Customer', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return false; // Default to not completed if error
+      }
+      
+      if (response.data && response.data.length > 0) {
+        // Return true if onboardingCompleted field contains any truthy value
+        const completedValue = response.data[0].onboardingCompleted;
+        return completedValue === "true" || completedValue === true || completedValue === "1";
+      }
+      
+      return false; // Default to not completed if user not found
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error checking onboarding status:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return false; // Default to not completed if error
+    }
+  },
+  
+  markOnboardingComplete: async (email) => {
+    try {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      // First, find the customer record by email
+      const findParams = {
+        fields: [
+          { field: { Name: "Id" } }
+        ],
+        where: [
+          {
+            FieldName: "email",
+            Operator: "EqualTo",
+            Values: [email]
+          }
+        ],
+        pagingInfo: {
+          limit: 1,
+          offset: 0
+        }
+      };
+      
+      const findResponse = await apperClient.fetchRecords('app_Customer', findParams);
+      
+      if (!findResponse.success || !findResponse.data || findResponse.data.length === 0) {
+        throw new Error("Customer record not found");
+      }
+      
+      const customerId = findResponse.data[0].Id;
+      
+      // Update the onboarding completion status
+      const updateData = {
+        Id: parseInt(customerId),
+        onboardingCompleted: "true"
+      };
+      
+      const params = {
+        records: [updateData]
+      };
+      
+      const response = await apperClient.updateRecord('app_Customer', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      if (response.results) {
+        const successfulUpdates = response.results.filter(result => result.success);
+        const failedUpdates = response.results.filter(result => !result.success);
+        
+        if (failedUpdates.length > 0) {
+          console.error(`Failed to update onboarding status:${JSON.stringify(failedUpdates)}`);
+          
+          failedUpdates.forEach(record => {
+            if (record.message) throw new Error(record.message);
+          });
+        }
+        
+        return successfulUpdates.length > 0;
+      }
+      
+      return false;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error marking onboarding complete:", error?.response?.data?.message);
       } else {
         console.error(error.message);
       }
