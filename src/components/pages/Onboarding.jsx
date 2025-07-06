@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "@clerk/clerk-react";
+import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import ApperIcon from "@/components/ApperIcon";
@@ -13,7 +13,7 @@ import { customersService } from "@/services/api/customersService";
 
 const Onboarding = () => {
   const navigate = useNavigate()
-  const { user } = useUser()
+  const user = useSelector((state) => state.user?.user)
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     organizationName: '',
@@ -64,8 +64,8 @@ const handleSubmit = async (e) => {
 setLoading(true)
     try {
       // Mark onboarding as completed in the database
-      if (user?.emailAddresses?.[0]?.emailAddress) {
-        await customersService.markOnboardingComplete(user.emailAddresses[0].emailAddress)
+      if (user?.emailAddress) {
+        await customersService.markOnboardingComplete(user.emailAddress)
       }
       toast.success('Organization setup completed')
       navigate('/billing-model-selection')
