@@ -1,5 +1,3 @@
-import React from "react";
-import Error from "@/components/ui/Error";
 export const customersService = {
   getAll: async () => {
     try {
@@ -247,18 +245,17 @@ export const customersService = {
       }
       
       return false;
-    } catch (error) {
+} catch (error) {
       if (error?.response?.data?.message) {
         console.error("Error deleting customer:", error?.response?.data?.message);
       } else {
         console.error(error.message);
       }
       throw error;
-throw error;
     }
-  },
   
   getUserOnboardingStatus: async (email) => {
+    try {
       await new Promise(resolve => setTimeout(resolve, 200));
       
       const { ApperClient } = window.ApperSDK;
